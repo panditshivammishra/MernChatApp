@@ -12,14 +12,17 @@ import {
   Input,
   useToast,
   Box,
+  useColorMode,
 } from "@chakra-ui/react";
+import "../components/styles.css"
 import axios from "axios";
 import { useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
-
+import ChatLoading from "../components/ChatLoading"
 const GroupChatModal = ({ children }) => {
+  const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -104,6 +107,7 @@ const GroupChatModal = ({ children }) => {
         },
         config
       );
+      console.log(data);
       setChats([data, ...chats]);
       onClose();
       toast({
@@ -127,7 +131,7 @@ const GroupChatModal = ({ children }) => {
 
   return (
     <>
-      <span onClick={onOpen}>{children}</span>
+      <button className={colorMode==='light'?"myButtons":"darkButton"} onClick={onOpen}>{children}</button>
 
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
@@ -141,7 +145,7 @@ const GroupChatModal = ({ children }) => {
             Create Group Chat
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody d="flex" flexDir="column" alignItems="center">
+          <ModalBody display="flex" flexDirection="column" alignItems="center">
             <FormControl>
               <Input
                 placeholder="Chat Name"
@@ -156,26 +160,27 @@ const GroupChatModal = ({ children }) => {
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </FormControl>
-            <Box w="100%" d="flex" flexWrap="wrap">
+            <Box w="100%" display="flex" flexWrap="wrap">
               {selectedUsers.map((u) => (
+              
                 <UserBadgeItem
                   key={u._id}
                   user={u}
+                  admin={user}
                   handleFunction={() => handleDelete(u)}
                 />
-              ))}
+              ) )}
             </Box>
             {loading ? (
-              // <ChatLoading />
-              <div>Loading...</div>
+            <ChatLoading />
             ) : (
               searchResult
                 ?.slice(0, 4)
-                .map((user) => (
+                .map((listUser) => (
                   <UserListItem
-                    key={user._id}
-                    user={user}
-                    handleFunction={() => handleGroup(user)}
+                    key={listUser._id}
+                    handleFunction={() => handleGroup(listUser)}
+                    user={listUser}
                   />
                 ))
             )}

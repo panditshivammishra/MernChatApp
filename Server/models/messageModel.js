@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const messageSchema = mongoose.Schema(
   {
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    content: { type: String, trim: true },
+    content: { type: String, trim: true ,default:''},
+    file: { type: String, trim: true,default:'' },
     chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },

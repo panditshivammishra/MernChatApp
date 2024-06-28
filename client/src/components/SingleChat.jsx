@@ -1,24 +1,32 @@
 import { FormControl } from "@chakra-ui/form-control";
-import { Input } from "@chakra-ui/input";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import online from "./animations/online.json"
+import offline from "./animations/offine.json"
 import { Box, Text } from "@chakra-ui/layout";
 import "./styles.css";
-import { IconButton, Spinner, useToast } from "@chakra-ui/react";
-import { getSender, getSenderFull } from "../config/ChatLogics";
-import { useEffect, useState } from "react";
+import { IconButton,  useToast,useColorMode,Avatar} from "@chakra-ui/react";
+import { getSender,getSenderFull } from "../config/ChatLogics";
+import { useEffect,  useState,useRef } from "react";
 import axios from "axios";
+import Popup from "./Popup"
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import ProfileModal from "../miscellaneous/ProfileModal";
+import OtherProfileModal from "../miscellaneous/OtherProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "./animations/lottie.json"
-
-import io from "socket.io-client";
+import { BiImageAdd } from "react-icons/bi";
+import { IoSend } from "react-icons/io5";
 import UpdateGroupChatModal from "../miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
-const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
-var socket, selectedChatCompare;
+import { IoMdVideocam } from 'react-icons/io';
+import { Tooltip } from "@chakra-ui/tooltip";
+import RiseLoader from 'react-spinners/RiseLoader';
+// import GridLoader from 'react-spinners/GridLoader';
+var  selectedChatCompare;
 
-const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+const SingleChat = ({ fetchAgain, setFetchAgain, videoCall, setVideoCall }) => {
+  const [picLoading, setPicLoading] = useState(false);
+  const { colorMode } = useColorMode();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -26,6 +34,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
+  const [callerData, setCallerData] = useState();
+const previousChatId = useRef(null);
+  const [media, setMedia] = useState("");
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
 
   const defaultOptions = {
     loop: true,
@@ -35,22 +47,134 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { selectedChat, setSelectedChat, user, notification, setNotification } =
+  const userOnline = {
+    loop: true,
+    autoplay: true,
+    animationData: online,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  const userOffline = {
+    loop: true,
+    autoplay: true,
+    animationData: offline,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  const { popup,setPopup,checkCallChat,setCheckCallChat,selectedChat, setSelectedChat, user, notification, setNotification,socket,setCallRoomId } =
     ChatState();
-    useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", user);
+  
+
+
+
+  
+  
+ useEffect(() => {
+   if (selectedChat && (selectedChat._id === checkCallChat)) {
+       socket.emit('leaveRoom', {checkCallChat,to:socket.id});
+   
+      setCallRoomId(checkCallChat);
+      socket.emit("join-room", checkCallChat);
+      setVideoCall(true);
+      setPopup(false);
+    }
+
+    return () => {
+       if (selectedChat && (selectedChat._id === checkCallChat)) 
+        socket.off('join-room');
+    }
+  }, [selectedChat,checkCallChat]);
+       useEffect(() => {
+    
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-  }, []);
+    // socket.on("accept-call", handleCall);
+         socket.on('user-online', (data) => {
+           socket.emit('i also online',{userId:data,from:user._id});
+         ;
+       setOnlineUsers((prevOnlineUsers) => {
+      const newOnlineUsers = new Set(prevOnlineUsers);
+       newOnlineUsers.add(data);
+       return newOnlineUsers;
+  });
+        });
+         
+    socket.on('incoming-call', (data) => {
+      console.log(`there is call for u from ${data.name}`);
+          setCheckCallChat(data.chatId);
+          setCallerData(data);
+     
+      if ((selectedChat == null) || (selectedChat._id != data.chatId)) {
+        setPopup(true);
+      } 
+    });
+     
+         socket.on("make me online", (data) => {
+         
+           setOnlineUsers((prevOnlineUsers) => {
+             const newOnlineUsers = new Set(prevOnlineUsers);
+             newOnlineUsers.add(data);
+             return newOnlineUsers;
+           });
+         });
+    socket.on('Do-videoCall', (roomId) => {
+      console.log("User room join kro video call ke liye");
+      setCallRoomId(roomId);
+      setVideoCall(true);
+    });
+         
+         
+    socket.on("offline-him", (userId) => {
+      setOnlineUsers((prevOnlineUsers) => {
+  const newOnlineUsers = new Set(prevOnlineUsers); // Create a copy to avoid modifying the original
+  newOnlineUsers.delete(userId); // Remove the user with the specified data (usually the user ID)
+  return newOnlineUsers;
+});
+         })
+    return () => {
+      // Do not disconnect the socket here
 
-  const fetchMessages = async () => {
+      socket.off("connected");
+      socket.off("typing");
+      socket.off("stop typing");
+      socket.off("incoming-call");
+      socket.off("Do-videoCall");
+    };
+  }, [socket, user,selectedChat]); 
+  
+
+
+
+
+
+
+
+
+
+
+
+  // accepting call
+  
+//   const handleCall = useCallback((data) => {
+//     // Your code here
+//     console.log("trying to accept call")
+//     if (selectedChat._id == data) {
+//       setVideoCall(1);
+//     }
+// }, [selectedChat]);
+
+
+
+
+  const fetchMessages = async () => {   
     if (!selectedChat) return;
-
+      
     try {
       const config = {
-        headers: {
+        headers: { 
           Authorization: `Bearer ${user.token}`,
         },
       };
@@ -76,9 +200,107 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       });
     }
   };
+  const handleonpress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      sendMessage();
+  }
+  }
+  
 
-  const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
+
+const handleFileSelect = () => {
+    // Trigger file input click
+    document.getElementById("fileInput").click();
+  };
+   
+
+  // Taking File URL from CLOUDINARY
+
+
+  const postDetails = (file) => {
+    setPicLoading(true);
+  if (!file) {
+    toast({
+      title: "Please Select a File!",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    return;
+  }
+
+  // Check if the file type is either an image or a video
+  const allowedTypes = ["image/jpeg", "image/png", "video/mp4"]; // Add more allowed types as needed
+  if (!allowedTypes.includes(file.type)) {
+    toast({
+      title: "Please Select an Image or Video File!",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    return;
+  }
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("upload_preset", "shivamapp");
+  data.append("cloud_name", "dltghciqz");
+
+
+fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
+  method: "post",
+  body: data,
+})
+  .then((res) => res.json())
+  .then((data) => {
+    setMedia(data.url.toString());
+    
+    // Call sendMessage after setting the media
+  })
+  .catch((err) => {
+    setPicLoading(false);
+    console.log(err);
+  });
+
+  
+  };
+  
+  useEffect(() => {
+  if (media) {
+    sendMessage();
+  }
+}, [media]);
+
+
+
+
+
+
+  //handling  video call
+ 
+  const handleVideoCall = () => {
+    const anotherUser = getSenderFull(user,selectedChat.users);
+    socket.emit('start-call', { name: user.name, chatId: selectedChat._id, callerId: user._id, toRoom: anotherUser._id });
+   
+  };
+
+
+
+
+
+
+
+
+  const sendMessage = async () => {
+ 
+    const trimmedMessage = newMessage.trim();
+    setNewMessage(trimmedMessage);
+
+  
+    if (trimmedMessage.length > 0) {
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
@@ -86,21 +308,29 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             "Content-type": "application/json",
             Authorization: `Bearer ${user.token}`,
           },
-        };
+        };     
+
+        // Clear the message input field
         setNewMessage("");
+
+        // Use the trimmedMessage for sending
         const { data } = await axios.post(
           "http://localhost:5000/api/message",
           {
-            content: newMessage,
-            chatId: selectedChat,
+            content: trimmedMessage,
+            chatId: selectedChat._id,
           },
           config
         );
+
+      
         socket.emit("new message", data);
         setMessages([...messages, data]);
+        
       } catch (error) {
+        // Handle any errors
         toast({
-          title: "Error Occured!",
+          title: "Error Occurred!",
           description: "Failed to send the Message",
           status: "error",
           duration: 5000,
@@ -109,15 +339,59 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         });
       }
     }
+
+    if (media) {
+    
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.post(
+          "http://localhost:5000/api/message/upload",
+          {
+            file: media,
+            chatId: selectedChat._id,
+          },
+          config
+        );
+
+      
+        socket.emit("new message", data);
+        setMessages([...messages, data]);
+        setPicLoading(false);
+      } catch (error) {
+        // Handle any errors
+        setPicLoading(false);
+        toast({
+          title: "Error Occurred!",
+          description: "Failed to send the Message",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+
+      setMedia("");
+    }
+    setFetchAgain(!fetchAgain);
   };
 
-  
 
   useEffect(() => {
+    if (previousChatId.current) {
+     
+      socket.emit("leave-room", previousChatId.current);
+    }
+    if (selectedChat) { previousChatId.current = selectedChat._id; }
+    else previousChatId.current = null;
+
     fetchMessages();
 
     selectedChatCompare = selectedChat;
-    // eslint-disable-next-line
   }, [selectedChat]);
 
   useEffect(() => {
@@ -129,7 +403,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         if (!notification.includes(newMessageRecieved)) {
           setNotification([newMessageRecieved, ...notification]);
           setFetchAgain(!fetchAgain);
-        }
+        }    
       } else {
         setMessages([...messages, newMessageRecieved]);
       }
@@ -138,9 +412,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
-
-    if (!socketConnected) return;
-
+    if (!socketConnected) return;   
     if (!typing) {
       setTyping(true);
       socket.emit("typing", selectedChat._id);
@@ -159,8 +431,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   return (
     <>
+      {popup && <Popup data={callerData} popup={ popup} setPopup={setPopup} />}
       {selectedChat ? (
         <>
+          
           <Text
             fontSize={{ base: "28px", md: "30px" }}
             pb={3}
@@ -171,22 +445,55 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             justifyContent={{ base: "space-between" }}
             alignItems="center"
           >
-            <IconButton
+          
+            {/* <IconButton
               d={{ base: "flex", md: "none" }}
-              icon={<ArrowBackIcon />}
+              icon={<ArrowBackIcon/>}
               onClick={() => setSelectedChat("")}
+              
             />
+      */}
             {messages &&
               (!selectedChat.isGroupChat ? (
-                <>
-                  {getSender(user, selectedChat.users)}
-                  <ProfileModal
+              <Box display="flex" justifyContent="center" alignItems="center">
+                
+                 <OtherProfileModal
                     user={getSenderFull(user, selectedChat.users)}
                   />
-                </>
+                  
+                  
+               <Box display="flex" flexDirection="column" alignItems="">
+      <Text style={{ fontSize: "17px" ,minHeight:"0" }}>
+        {getSender(user, selectedChat.users)}
+      </Text>
+      <Box display="inline-flex"  alignItems="center" >
+        {onlineUsers.has(getSenderFull(user, selectedChat.users)._id) ? (
+          <>
+            <Text style={{ fontSize: "12px", color: "rgb(73,193,83)"  , minHeight:"0" }}>online</Text>
+            <Box width="15px" height="15px">
+              <Lottie options={userOnline} width="100%" height="100%" />
+            </Box>
+          </>
+        ) : (
+          <>
+            <Text style={{ fontSize: "12px", color: "rgb(255, 60, 0)" , minHeight:"0"  }}>offline</Text>
+            <Box width="15px" height="15px">
+              <Lottie options={userOffline} width="100%" height="100%" />
+            </Box>
+          </>
+        )}
+      </Box>
+    </Box>
+                 
+                </Box>
               ) : (
                 <>
-                  {selectedChat.chatName.toUpperCase()}
+                  <Box display="flex">
+                  <Avatar  name={selectedChat.chatName }
+                      src={ "" }    h="40px"
+          w="40px"/>
+                    <Text fontSize="17px" display="inline-flex" p="4px">{selectedChat.chatName}</Text>
+                    </Box>
                   <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
                     fetchAgain={fetchAgain}
@@ -194,57 +501,104 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   />
                 </>
               ))}
+            {!selectedChat.isGroupChat &&(<Tooltip label="video call" hasArrow placement="bottom-end">
+      <IconButton
+    icon={<IoMdVideocam />}
+    aria-label="Video Call"
+    onClick={() => handleVideoCall()}
+              />
+              </Tooltip>)}
           </Text>
+        
           <Box
             display="flex"
             flexDir="column"
             justifyContent="flex-end"
             p={3}
-            bg="#E8E8E8"
+             bg={colorMode==='dark'?"gray.800":"#E8E8E8"}
             w="100%"
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
+            position="relative"
           >
             {loading ? (
-              <Spinner
-                size="xl"
-                w={20}
-                h={20}
-                alignSelf="center"
-                margin="auto"
-              />
+             <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          w="100%"
+                h="100%"
+              
+        >
+          <RiseLoader size={10} color={"#4FA94D"} />
+        </Box>
             ) : (
-              <div className="messages">
-                <ScrollableChat messages={messages} />
-              </div>
+              
+                <Box className="messages" position="relative">
+                  {/* {console.log(`this is my messages ${messages}`)} */}
+                  <ScrollableChat messages={messages} picLoading={ picLoading } />
+              </Box>
             )}
 
             <FormControl
-              onKeyDown={sendMessage}
+              onKeyDown={handleonpress}
               id="first-name"
               isRequired
               mt={3}
             >
               {istyping ? (
-                <div>
+                <div >
                   <Lottie
                     options={defaultOptions}
-                    // height={50}
-                    width={70}
-                    style={{ marginBottom: 15, marginLeft: 0 }}
+                    height={50}
+                
+                    width={50}
+                    style={{ marginBottom: 2, marginLeft: 0 }}
                   />
                 </div>
               ) : (
                 <></>
               )}
+               <InputGroup>
               <Input
                 variant="filled"
-                bg="#E0E0E0"
+                  bg={colorMode==="dark"?"gray.700":"#E0E0E0"}
+                
                 placeholder="Enter a message.."
                 value={newMessage}
                 onChange={typingHandler}
-              />
+                />      
+              
+                
+
+
+      <InputRightElement onClick={handleFileSelect} cursor="pointer"  marginRight="9">
+        <BiImageAdd  size="20px"/>
+        {/* File input hidden for triggering file select */}
+        <input
+          id="fileInput"
+          type="file"
+          accept="*/*"
+          style={{ display: "none" }}
+           onChange={(e) => postDetails(e.target.files[0])}
+        />
+      </InputRightElement>
+
+
+
+
+
+
+
+         <InputRightElement onClick={sendMessage} cursor="pointer">
+   
+    <IoSend  size="20px"/>
+
+                  
+      </InputRightElement>
+              </InputGroup>
+             
             </FormControl>
           </Box>
         </>

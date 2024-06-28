@@ -4,10 +4,11 @@ import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import { useState } from "react";
 import axios from "axios";
-import { useToast } from "@chakra-ui/react";
+import { useColorMode, useToast} from "@chakra-ui/react";
 // import { ChatState } from "../../Context/ChatProvider";
 
 const Login = () => {
+ const {colorMode}=useColorMode
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
@@ -16,7 +17,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
  
-  // const { setUser } = ChatState();
+ 
 
   const submitHandler = async () => {
     setLoading(true);
@@ -96,21 +97,25 @@ const Login = () => {
         </InputGroup>
       </FormControl>
       <Button
-        colorScheme="blue"
+              colorScheme={colorMode==='dark'?"#0095f4":"blue"}
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
         isLoading={loading}
+       
       >
         Login
       </Button>
       <Button
-        variant="solid"
         colorScheme="red"
+        variant="solid"
+       
         width="100%"
+        // color="#ffff"
         onClick={() => {
           setEmail("guest@example.com");
           setPassword("123456");
+
         }}
       >
         Get Guest User Credentials

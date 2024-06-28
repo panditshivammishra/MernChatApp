@@ -1,13 +1,14 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Box, Text } from "@chakra-ui/layout";
+import { useColorMode } from "@chakra-ui/react";
 
 const UserListItem = ({ handleFunction,user }) => {
-
+  const { colorMode } = useColorMode();
   return (
     <Box
       onClick={handleFunction}
       cursor="pointer"
-      bg="#E8E8E8"
+   
       _hover={{
         background: "#38B2AC",
         color: "white",
@@ -15,11 +16,12 @@ const UserListItem = ({ handleFunction,user }) => {
       w="100%"
       d="flex"
       alignItems="center"
-      color="black"
+      color={colorMode=="light"?"black":"#ffff"}
       px={3}
       py={2}
       mb={2}
       borderRadius="lg"
+      bg={colorMode=="light"?"#E8E8E8":"gray.900"}
     >
       <Avatar
         mr={2}

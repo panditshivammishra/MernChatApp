@@ -71,9 +71,7 @@ const fetchChats = asyncHandler(async (req, res) => {
   }
 });
 
-//@description     Create New Group Chat
-//@route           POST /api/chat/group
-//@access          Protected
+
 const createGroupChat = asyncHandler(async (req, res) => {
   if (!req.body.users || !req.body.name) {
     return res.status(400).send({ message: "Please Fill all the feilds" });
@@ -188,7 +186,42 @@ const addToGroup = asyncHandler(async (req, res) => {
     res.json(added);
   }
 });
+const updatingPic = asyncHandler(async (req, res) => {
+  let token;
+if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  )
+    token = req.headers.authorization.split(" ")[1];
+  
+  
+  const { updatedPic } = req.body;
+  // console.log(`userId of request ${req.user.token}`);
+  let updatedUser = await User.findByIdAndUpdate(req.user._id,
+    {
+     $set: { pic: updatedPic },
+    },
+    {
+      new: true,
+    }
+  ); 
 
+  if (!updatedUser) {
+    res.status(404);
+    throw new Error("User Not Get Updated");
+  } else {
+    
+      // console.log(updatedUser)
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      pic: updatedUser.pic,
+      token: token,
+    });
+  }
+});
 export {
   accessChat,
   fetchChats,
@@ -196,4 +229,5 @@ export {
   renameGroup,
   addToGroup,
   removeFromGroup,
+  updatingPic
 };

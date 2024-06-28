@@ -5,13 +5,11 @@ import { VStack } from "@chakra-ui/layout";
 import {useToast} from "@chakra-ui/toast"
 import axios from "axios";
 import { useState } from "react";
-
+// import { ChatState } from "../Context/ChatProvider";
 const Signup = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
-
-
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [confirmpassword, setConfirmpassword] = useState();
@@ -59,9 +57,7 @@ const Signup = () => {
   },
   config
 );
-
-      console.log(data);
-      toast({
+    toast({
         title: "Registration Successful",
         status: "success",
         duration: 5000,
@@ -69,6 +65,7 @@ const Signup = () => {
         position: "bottom",
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
+      console.log(data);
       setPicLoading(false);
       window.location.href = '/chat';
     } catch (error) {

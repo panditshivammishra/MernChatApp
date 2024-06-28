@@ -1,9 +1,10 @@
 import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
-import { Box } from '@chakra-ui/react'
+import { Box,useColorMode } from '@chakra-ui/react'
 import { Text } from "@chakra-ui/layout";
 import { FaSearch } from "react-icons/fa";
+import "../components/styles.css"
 import {
   Menu,
   MenuButton,
@@ -18,8 +19,10 @@ import {
   DrawerHeader,
   DrawerOverlay,
 } from "@chakra-ui/modal";
+import { TbLogout2,  } from "react-icons/tb";
+
 import { Tooltip } from "@chakra-ui/tooltip";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon, MoonIcon,SunIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useState } from "react";
 import axios from "axios";
@@ -32,19 +35,21 @@ import { Effect } from "react-notification-badge";
 import { getSender } from "../Config/ChatLogics";
 import UserListItem from "../userAvatar/UserListItem";
 import { ChatState } from "../Context/ChatProvider";
+import GroupChatModal from "./GroupChatModal";
+import { MdGroupAdd } from "react-icons/md";
 const SideDrawer=() =>{
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-
+  const { colorMode,toggleColorMode } = useColorMode();
   const {
     setSelectedChat,
     user,
     notification,
     setNotification,
     chats,
-    setChats,
+    setChats
   } = ChatState();
 
   const toast = useToast();
@@ -97,7 +102,6 @@ const SideDrawer=() =>{
   };
 
   const accessChat = async (userId) => {
-  
     try {
       setLoadingChat(true);
       const config = {
@@ -132,38 +136,93 @@ const SideDrawer=() =>{
         alignItems="center"
         bg="white"
         w="100%"
-        p="5px 10px 5px 10px"
-        borderWidth="5px"
+        p="11px 5px 11px 5px"
+       shadow="rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;"
+        backgroundColor={colorMode === "dark" ? "gray.700":"rgb(30 179 26)"}
+      
+        color="#ffff"
+        border="none"
       >
+        
+        
+       <Box display="flex" justifyContent="space-between" alignItems="center" px="15px" w="31%">
+         
+          <Tooltip label="Profile" hasArrow placement="bottom-end">
+    <Box>
+      <ProfileModal user={user}>
+        <Avatar
+          h="40px"
+          w="40px"
+          marginRight="15px"
+          cursor="pointer"
+          name={user.name}
+          src={user.pic}
+        />
+      </ProfileModal>
+    </Box>
+  </Tooltip>
+          <Box display="flex" alignItems="center">
+            
+
+            <Tooltip label="New Group" hasArrow placement="bottom-end">
+              <Box display="grid" placeItems="center">
+          <GroupChatModal>
+          <MdGroupAdd size="1.5rem" />
+                </GroupChatModal>
+              </Box>
+            </Tooltip>
+            
+
+
+   <Tooltip label="change mode" hasArrow placement="bottom-end">
+        <button className={colorMode=='light'?"myButtons":"darkButton"} onClick={toggleColorMode}>
+          {colorMode === 'light' ? (
+            <MoonIcon boxSize="1.5rem" />
+          ) : (
+            <SunIcon boxSize="1.5rem" />
+          )}
+        </button></Tooltip>
+        <Tooltip label="Logout" hasArrow placement="bottom-end">
+        <button className={colorMode=='light'?"myButtons":"darkButton"} style={{ paddingRight: "15px" }} onClick={logoutHandler}>
+          <TbLogout2 size="1.5rem" />
+        </button></Tooltip>
+
         <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
-          <FaSearch /> 
+          <Button onClick={onOpen} display="flex" alignItems="center" mx="1px">
+            <FaSearch size="1.1rem" />
             <Text display={{ base: "none", md: "flex" }} px={4}>
               Search User
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
-          Talk-A-Tive
-        </Text>
-        <div>
-          <Menu>
-            <MenuButton p={1}>
+      </Box>
+    </Box>
+
+        
+        
+        <Menu>
+          <Tooltip label="Noritications" hasArrow placement="bottom-end">
+           
+            <MenuButton >
               <NotificationBadge
                 count={notification.length}
                 effect={Effect.SCALE}
-              />
-              <BellIcon fontSize="2xl" m={1} />
-            </MenuButton>
-            <MenuList pl={2}>
+                />
+               
+                  <BellIcon marginBottom="5px" fontSize="3xl" mx={1} />
+                  
+            </MenuButton></Tooltip>
+            <MenuList  bg={colorMode=="light"?"rgb(30 179 26)":"gray.900"} pl={2}>
               {!notification.length && "No New Messages"}
               {notification.map((notif) => (
+                
                 <MenuItem
                   key={notif._id}
                   onClick={() => {
                     setSelectedChat(notif.chat);
                     setNotification(notification.filter((n) => n !== notif));
                   }}
+
                 >
                   {notif.chat.isGroupChat
                     ? `New Message in ${notif.chat.chatName}`
@@ -172,24 +231,9 @@ const SideDrawer=() =>{
               ))}
             </MenuList>
           </Menu>
-          <Menu>
-            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
-              <Avatar
-                size="sm"
-                cursor="pointer"
-                name={user.name}
-                src={user.pic}
-              />
-            </MenuButton>
-            <MenuList>
-              <ProfileModal user={user}>
-                <MenuItem>My Profile</MenuItem>{" "}
-              </ProfileModal>
-              <MenuDivider />
-              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-            </MenuList>
-          </Menu>
-        </div>
+
+
+
       </Box>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
@@ -221,6 +265,8 @@ const SideDrawer=() =>{
           </DrawerBody>
         </DrawerContent>
       </Drawer>
+
+
     </>
   );
 }

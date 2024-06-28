@@ -5,7 +5,7 @@ import {
       createGroupChat,
       removeFromGroup,
       addToGroup,
-      renameGroup,
+      renameGroup,updatingPic
 } from "../controllers/chatController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -17,5 +17,6 @@ chatRouter.route("/group").post(protect, createGroupChat);
 chatRouter.route("/rename").put(protect, renameGroup);
 chatRouter.route("/groupremove").put(protect, removeFromGroup);
 chatRouter.route("/groupadd").put(protect, addToGroup);
+chatRouter.route("/updatePic").put(protect, updatingPic);
 
 export {chatRouter};
