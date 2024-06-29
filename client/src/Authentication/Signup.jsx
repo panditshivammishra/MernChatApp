@@ -5,7 +5,7 @@ import { VStack } from "@chakra-ui/layout";
 import {useToast} from "@chakra-ui/toast"
 import axios from "axios";
 import { useState } from "react";
-// import { ChatState } from "../Context/ChatProvider";
+
 const Signup = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
@@ -161,7 +161,7 @@ const Signup = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <FormControl id="Password" isRequired>
+      <FormControl  isRequired>
         <FormLabel>Confirm Password</FormLabel>
         <InputGroup size="md">
           <Input

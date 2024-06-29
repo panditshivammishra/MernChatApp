@@ -268,7 +268,6 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
       display={{ base: selectedChat ? 'flex' : 'none', md: 'flex' }}
       alignItems="center"
       justifyContent="center"
-      bg="white"
       w={{ base: '100%', md: '68%' }}
       
      

@@ -1,5 +1,4 @@
-import React from 'react'
-import { ViewIcon } from "@chakra-ui/icons";
+import React, { useState } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -9,34 +8,42 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  useDisclosure,
   Text,
   Image,
- Avatar
+  Avatar,
+  useDisclosure,
+  Box
 } from "@chakra-ui/react";
+import MediaModal from './MediaModal';
 
-export default function OtherProfileModal({user}) {
-     const { isOpen, onOpen, onClose } = useDisclosure();
+export default function OtherProfileModal({ user }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [imageClicked, setImageClicked] = useState(false); // Track image click state
+  const [picLoading, setPicLoading] = useState(false);
+
+  const handleAvatarClick = () => {
+    onOpen();
+    setImageClicked(false); // Reset imageClicked state when modal opens
+  };
+
   return (
-      <>
-      {/* <IconButton d={{ base: "flex" }} icon={<ViewIcon  />} onClick={onOpen} /> */}
+    <>
       <Avatar
-          onClick={onOpen}
-          h="40px"
-          w="40px"
-          marginRight="5px"
-          cursor="pointer"
-          name={user.name}
-          src={user.pic}
-        />
+        onClick={handleAvatarClick}
+        h="40px"
+        w="40px"
+        marginRight="5px"
+        cursor="pointer"
+        name={user.name}
+        src={user.pic}
+      />
 
-  
-       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered >
+      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent h="410px" d="flex" >
+        <ModalContent h="410px" d="flex">
           <ModalHeader
-            fontSize="40px"
-            fontFamily="Work sans"
+            fontSize="30px"
+         
             display="flex"
             justifyContent="center"
           >
@@ -48,17 +55,24 @@ export default function OtherProfileModal({user}) {
             flexDir="column"
             alignItems="center"
             justifyContent="space-between"
-          >
             
-            <Image
-              borderRadius="full"
-              boxSize="150px"
-              src={user.pic}
-              alt={user.name}
-            />
+          >
+            <Box boxSize="150px">
+            <MediaModal setImageClicked={setImageClicked}>
+              <Image
+                borderRadius={imageClicked ? '0' : 'full'}
+                
+                src={user.pic}
+                alt={user.name}
+                objectFit="cover"
+                cursor="pointer"
+                onClick={() => setImageClicked(true)} // Update imageClicked state on click
+              />
+              </MediaModal>
+            </Box>
             <Text
-              fontSize={{ base: "28px", md: "30px" }}
-              fontFamily="Work sans"
+              fontSize={{ base: "5vw", md: "26px" }}
+            
             >
               Email: {user.email}
             </Text>
@@ -69,5 +83,5 @@ export default function OtherProfileModal({user}) {
         </ModalContent>
       </Modal>
     </>
-  )
+  );
 }
