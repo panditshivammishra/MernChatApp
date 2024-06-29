@@ -1,3 +1,4 @@
+import React, { forwardRef, useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -14,14 +15,14 @@ import {
   Box,
   useColorMode,
 } from "@chakra-ui/react";
-import "../components/styles.css"
+import "../components/styles.css";
 import axios from "axios";
-import { useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
-import ChatLoading from "../components/ChatLoading"
-const GroupChatModal = ({ children }) => {
+import ChatLoading from "../components/ChatLoading";
+
+const GroupChatModal = forwardRef(({ children }, ref) => {
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
@@ -61,8 +62,10 @@ const GroupChatModal = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config);
-      // console.log(data);
+      const { data } = await axios.get(
+        `http://localhost:5000/api/user?search=${search}`,
+        config
+      );
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -78,13 +81,15 @@ const GroupChatModal = ({ children }) => {
   };
 
   const handleDelete = (delUser) => {
-    setSelectedUsers(selectedUsers.filter((sel) => sel._id !== delUser._id));
+    setSelectedUsers(
+      selectedUsers.filter((sel) => sel._id !== delUser._id)
+    );
   };
 
   const handleSubmit = async () => {
     if (!groupChatName || !selectedUsers) {
       toast({
-        title: "Please fill all the feilds",
+        title: "Please fill all the fields",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -103,11 +108,12 @@ const GroupChatModal = ({ children }) => {
         `http://localhost:5000/api/chat/group`,
         {
           name: groupChatName,
-          users: JSON.stringify(selectedUsers.map((u) => u._id)),
+          users: JSON.stringify(
+            selectedUsers.map((u) => u._id)
+          ),
         },
         config
       );
-      console.log(data);
       setChats([data, ...chats]);
       onClose();
       toast({
@@ -131,7 +137,9 @@ const GroupChatModal = ({ children }) => {
 
   return (
     <>
-      <button className={colorMode==='light'?"myButtons":"darkButton"} onClick={onOpen}>{children}</button>
+      <Button ref={ref} color={colorMode === "light" ? "rgb(30 179 26)" : "#ffff"} onClick={onOpen}>
+        {children}
+      </Button>
 
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
@@ -162,17 +170,16 @@ const GroupChatModal = ({ children }) => {
             </FormControl>
             <Box w="100%" display="flex" flexWrap="wrap">
               {selectedUsers.map((u) => (
-              
                 <UserBadgeItem
                   key={u._id}
                   user={u}
                   admin={user}
                   handleFunction={() => handleDelete(u)}
                 />
-              ) )}
+              ))}
             </Box>
             {loading ? (
-            <ChatLoading />
+              <ChatLoading />
             ) : (
               searchResult
                 ?.slice(0, 4)
@@ -194,6 +201,6 @@ const GroupChatModal = ({ children }) => {
       </Modal>
     </>
   );
-};
+});
 
 export default GroupChatModal;

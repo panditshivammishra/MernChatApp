@@ -222,6 +222,20 @@ if (
     });
   }
 });
+
+const deleteChat = asyncHandler(async (req, res) => {
+  
+  const { chatId } = req.body;
+
+   try {
+    const result = await Chat.findByIdAndDelete(chatId );
+     res.json(result);
+
+    } catch (error) {
+      console.error('Error deleting document:', error);
+    } 
+});
+
 export {
   accessChat,
   fetchChats,
@@ -229,5 +243,5 @@ export {
   renameGroup,
   addToGroup,
   removeFromGroup,
-  updatingPic
+  updatingPic,deleteChat
 };

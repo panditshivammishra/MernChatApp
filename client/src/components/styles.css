@@ -122,20 +122,20 @@ content: "";
     position:relative;
     left:40%;
  }
-.darkMychats{
+/* .darkMychats{
     color: #FFFFFF;
 }
  .darkMychats:hover{
     background: #2d3748;
     opacity: .64;
- }
+ } */
 
 
  .setBorder{
   border-bottom: 2px solid red;
  }
 
- .myButtons{
+ /* .myButtons{
     border-radius: 50%;
     margin-left:2px;
 padding:7px;
@@ -156,4 +156,4 @@ padding:7px;
   .darkButton:hover {
       background-color: #071005;
       opacity: .6;
-  }
+  } */

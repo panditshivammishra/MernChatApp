@@ -19,18 +19,22 @@ function Home() {
         d="flex"
         justifyContent="center"
         p={3}
-        bg={colorMode==='dark'?"gray.900":"#ffff"}
+        bg={colorMode==='dark'?"gray.900":"#b2e2f6"}
         w="100%"
         m="40px 0 15px 0"
         borderRadius="lg"
         borderWidth="1px"
         shadow="rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
       >
-        <Text fontSize="4xl" fontFamily="Work sans" textAlign={[ 'center' ]}>
-          Cool-Chat-App
+        <Text fontSize="4xl"
+        bgGradient="linear(to-r, #2E3A75, #357C6A, #8F8F70)"
+        bgClip="text"
+        fontWeight="bold"
+ textAlign={[ 'center' ]}>
+          Chat-App
         </Text>
       </Box>
-      <Box bg={colorMode==='dark'?"gray.900":"#ffff"} w="100%" p={4} borderRadius="lg" borderWidth="1px" shadow="rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px">
+      <Box bg={colorMode==='dark'?"gray.900":"#87CEEB"} w="100%" p={4} borderRadius="lg" borderWidth="1px" shadow="rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px" color={colorMode=="light"?"gray.900":"#ffff"}>
         <Tabs isFitted variant="soft-rounded">
           <TabList mb="1em">
             <Tab>Login</Tab>

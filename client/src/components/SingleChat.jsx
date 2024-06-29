@@ -9,7 +9,6 @@ import { getSender,getSenderFull } from "../config/ChatLogics";
 import { useEffect,  useState,useRef } from "react";
 import axios from "axios";
 import Popup from "./Popup"
-import { ArrowBackIcon } from "@chakra-ui/icons";
 import OtherProfileModal from "../miscellaneous/OtherProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
@@ -21,7 +20,7 @@ import { ChatState } from "../Context/ChatProvider";
 import { IoMdVideocam } from 'react-icons/io';
 import { Tooltip } from "@chakra-ui/tooltip";
 import RiseLoader from 'react-spinners/RiseLoader';
-// import GridLoader from 'react-spinners/GridLoader';
+import {DeleteIcon} from '@chakra-ui/icons'
 var  selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain, videoCall, setVideoCall }) => {
@@ -91,7 +90,7 @@ const previousChatId = useRef(null);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    // socket.on("accept-call", handleCall);
+   
          socket.on('user-online', (data) => {
            socket.emit('i also online',{userId:data,from:user._id});
          ;
@@ -129,8 +128,8 @@ const previousChatId = useRef(null);
          
     socket.on("offline-him", (userId) => {
       setOnlineUsers((prevOnlineUsers) => {
-  const newOnlineUsers = new Set(prevOnlineUsers); // Create a copy to avoid modifying the original
-  newOnlineUsers.delete(userId); // Remove the user with the specified data (usually the user ID)
+  const newOnlineUsers = new Set(prevOnlineUsers); 
+  newOnlineUsers.delete(userId);
   return newOnlineUsers;
 });
          })
@@ -156,15 +155,7 @@ const previousChatId = useRef(null);
 
 
 
-  // accepting call
   
-//   const handleCall = useCallback((data) => {
-//     // Your code here
-//     console.log("trying to accept call")
-//     if (selectedChat._id == data) {
-//       setVideoCall(1);
-//     }
-// }, [selectedChat]);
 
 
 
@@ -394,6 +385,52 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
+
+  const deleteChat = async () => {
+    
+    try {
+      
+     const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+      };
+      
+        const { data } = await axios.put(
+          "http://localhost:5000/api/chat/deleteChat",
+          {
+            chatId: selectedChat._id,
+          },
+          config
+        );
+     
+      setSelectedChat();
+      setFetchAgain(!fetchAgain);
+      fetchMessages();
+        toast({
+          title: "Chat deleted",
+          description: "chat deleted Successfully",
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+
+    } catch {
+  toast({
+          title: "Error Occurred!",
+          description: "Failed to delete the Message",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+     
+    }
+    
+}
+
+
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
       if (
@@ -437,7 +474,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
           
           <Text
             fontSize={{ base: "28px", md: "30px" }}
-            pb={3}
+            py={3}
             px={2}
             w="100%"
             fontFamily="Work sans"
@@ -446,14 +483,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
             alignItems="center"
           >
           
-            {/* <IconButton
-              d={{ base: "flex", md: "none" }}
-              icon={<ArrowBackIcon/>}
-              onClick={() => setSelectedChat("")}
-              
-            />
-      */}
-            {messages &&
+           {messages &&
               (!selectedChat.isGroupChat ? (
               <Box display="flex" justifyContent="center" alignItems="center">
                 
@@ -463,7 +493,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
                   
                   
                <Box display="flex" flexDirection="column" alignItems="">
-      <Text style={{ fontSize: "17px" ,minHeight:"0" }}>
+      <Text style={{ fontSize: "17px" ,minHeight:"0" ,fontWeight:"650"}}>
         {getSender(user, selectedChat.users)}
       </Text>
       <Box display="inline-flex"  alignItems="center" >
@@ -492,7 +522,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
                   <Avatar  name={selectedChat.chatName }
                       src={ "" }    h="40px"
           w="40px"/>
-                    <Text fontSize="17px" display="inline-flex" p="4px">{selectedChat.chatName}</Text>
+                    <Text fontSize="17px" display="inline-flex" p="4px" fontWeight="700">{selectedChat.chatName}</Text>
                     </Box>
                   <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
@@ -501,13 +531,28 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
                   />
                 </>
               ))}
-            {!selectedChat.isGroupChat &&(<Tooltip label="video call" hasArrow placement="bottom-end">
-      <IconButton
-    icon={<IoMdVideocam />}
-    aria-label="Video Call"
-    onClick={() => handleVideoCall()}
-              />
-              </Tooltip>)}
+            {!selectedChat.isGroupChat && (
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <Tooltip label="delete chat" hasArrow placement="bottom-end">
+                  <button  onClick={deleteChat} style={{marginRight:"15px",marginBottom:"2px"}}>
+                    <DeleteIcon boxSize="1.2rem" color={colorMode === "light" ? "rgb(30 179 26)" : "#ffff"} />
+                    </button>
+                </Tooltip>
+                <Tooltip label="video call" hasArrow placement="bottom-end">
+              
+     
+                  <button
+                    onClick={() => handleVideoCall()}
+                  >
+                    <IoMdVideocam color={colorMode === "light" ? "rgb(30 179 26)" : "#ffff"} size="1.5rem"/>
+                  </button>
+                </Tooltip>
+              </Box>
+            )
+            }
+            
+
+
           </Text>
         
           <Box
@@ -518,7 +563,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
              bg={colorMode==='dark'?"gray.800":"#E8E8E8"}
             w="100%"
             h="100%"
-            borderRadius="lg"
+           
             overflowY="hidden"
             position="relative"
           >
@@ -574,7 +619,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
 
 
       <InputRightElement onClick={handleFileSelect} cursor="pointer"  marginRight="9">
-        <BiImageAdd  size="20px"/>
+        <BiImageAdd   color={colorMode==="light"?"rgb(30 179 26)":"#ffff"}  size="20px"/>
         {/* File input hidden for triggering file select */}
         <input
           id="fileInput"
@@ -593,7 +638,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
 
          <InputRightElement onClick={sendMessage} cursor="pointer">
    
-    <IoSend  size="20px"/>
+    <IoSend   color={colorMode==="light"?"rgb(30 179 26)":"#ffff"} size="20px"/>
 
                   
       </InputRightElement>
@@ -604,8 +649,8 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
         </>
       ) : (
         // to get socket.io on same page
-        <Box display="flex" alignItems="center" justifyContent="center" h="100%">
-          <Text fontSize="3xl" pb={3} fontFamily="Work sans">
+        <Box display="flex" alignItems="center" justifyContent="center" h="100%" w="100%" bg={colorMode=="light"?"green":"gray.700"} borderBottomRadius="6px">
+          <Text fontSize="3xl" color="#ffff" fontWeight="800" pb={3} fontFamily="Work sans">
             Click on a user to start chatting
           </Text>
         </Box>

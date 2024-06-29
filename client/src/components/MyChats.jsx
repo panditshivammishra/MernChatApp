@@ -1,22 +1,20 @@
-import { Box, Stack, Text, Input } from "@chakra-ui/react";
+import { Box, Stack, Text, Input, InputGroup, InputLeftElement, Avatar, useColorMode } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import LowerNotification from "./LowerNotification";
 import { getSenderFull } from "../Config/ChatLogics";
 import ChatLoading from "./ChatLoading";
-import {  Avatar, useColorMode,InputGroup,InputLeftElement } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
-import { SearchIcon } from "@chakra-ui/icons";
+import { FaSearch } from "react-icons/fa";
 import "./styles.css";
 
 const MyChats = ({ fetchAgain }) => {
   const { colorMode } = useColorMode();
   const [loggedUser, setLoggedUser] = useState();
-  const [isMapping, setIsMapping] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const [loading, setLoading] = useState(true); 
   const { selectedChat, setSelectedChat, user, chats, setChats, socket } = ChatState();
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
-
   const toast = useToast();
 
   useEffect(() => {
@@ -29,17 +27,8 @@ const MyChats = ({ fetchAgain }) => {
     }
   }, [chats]);
 
-  useEffect(() => {
-    if (chats) {
-      setIsMapping(true); // Set loading state to true before mapping
-      // Simulate a delay for the mapping process (replace with actual mapping logic)
-      setTimeout(() => {
-        setIsMapping(false); // Set loading state to false once mapping is complete
-      }, 1000); // Adjust the delay as needed
-    }
-  }, [chats]);
-
   const fetchChats = async () => {
+ 
     try {
       const config = {
         headers: {
@@ -48,8 +37,12 @@ const MyChats = ({ fetchAgain }) => {
       };
 
       const { data } = await axios.get("http://localhost:5000/api/chat", config);
+      
 
       setChats(data);
+
+
+      setLoading(false); 
     } catch (error) {
       toast({
         title: "Error Occurred!",
@@ -59,6 +52,7 @@ const MyChats = ({ fetchAgain }) => {
         isClosable: true,
         position: "bottom-left",
       });
+      setLoading(false); 
     }
   };
 
@@ -72,9 +66,7 @@ const MyChats = ({ fetchAgain }) => {
   };
 
   const filteredChats = chats?.filter((chat) => {
-
     const chatName = chat.isGroupChat ? chat.chatName : getSenderFull(loggedUser, chat.users).name;
-   
     return chatName.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
@@ -86,26 +78,20 @@ const MyChats = ({ fetchAgain }) => {
       px={2}
       bg="white"
       w={{ base: "100%", md: "31%" }}
-      borderRadius="lg"
-      borderWidth="1px"
       h="98.5%"
       backgroundColor={colorMode === 'dark' && "gray.700"}
       borderColor={colorMode === "light" ? "rgb(30 179 26)" : "gray.600"}
-      borderWidth="2px"
-      boxShadow="rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset"
     >
-     
-
       {/* Search Input */}
-    <InputGroup m={3} >
-  <InputLeftElement pointerEvents="none" children={<SearchIcon  color={colorMode==="light"?"gray.500":"gray.300"} />} />
+      <InputGroup m={3}>
+        <InputLeftElement pointerEvents="none" children={<FaSearch color={colorMode === "light" ? "gray.900" : "gray.300"} size="1.2rem" />} />
         <Input
           py="4px"
-    placeholder="Search Chats"
-    onChange={handleSearch}
-    value={searchQuery}
-  />
-</InputGroup>
+          placeholder="Search Chats"
+          onChange={handleSearch}
+          value={searchQuery}
+        />
+      </InputGroup>
 
       <Box
         display="flex"
@@ -113,12 +99,14 @@ const MyChats = ({ fetchAgain }) => {
         bg="#F8F8F8"
         w="100%"
         h="100%"
-        mb="3"
+        marginBottom="5px"
         borderRadius="lg"
         overflowY="hidden"
         backgroundColor={colorMode === 'dark' ? "gray.800" : "#E8E8E8"}
       >
-        {chats && !isMapping ? (
+        {loading ? (
+          <ChatLoading />
+        ) : chats && chats.length > 0 ? (
           <Stack
             overflowY="scroll"
             css={{
@@ -146,24 +134,23 @@ const MyChats = ({ fetchAgain }) => {
                 position="relative"
                 color={colorMode === 'dark' ? "#ffff" : `${selectedChat === chat ? "#ffff" : "black"}`}
               >
-                {console.log(chat)}
-                <Avatar  name={chat.isGroupChat ? chat.chatName : getSenderFull(loggedUser, chat.users).name}
-        src={chat.isGroupChat ? "" : getSenderFull(loggedUser, chat.users).pic} />
+                <Avatar
+                  name={chat.isGroupChat ? chat.chatName : getSenderFull(loggedUser, chat.users).name}
+                  src={chat.isGroupChat ? "" : getSenderFull(loggedUser, chat.users).pic}
+                />
                 <Box px={2}>
                   <Text fontWeight="700">
-                    {!chat.isGroupChat
-                      ? getSenderFull(loggedUser, chat.users).name
-                      : chat.chatName}
+                    {!chat.isGroupChat ? getSenderFull(loggedUser, chat.users).name : chat.chatName}
                   </Text>
                   <Box>
-                    {(chat.latestMessage) && (<LowerNotification latestMessage={chat.latestMessage} />)}
+                    {chat.latestMessage && <LowerNotification latestMessage={chat.latestMessage} />}
                   </Box>
                 </Box>
               </Box>
             ))}
           </Stack>
         ) : (
-          <ChatLoading />
+          <Text display="inline-flex" alignItems="center" justifyContent="center" py="12px">Add Users To Chat</Text>
         )}
       </Box>
     </Box>

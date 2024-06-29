@@ -285,8 +285,8 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
       justifyContent="center"
       bg="white"
       w={{ base: '100%', md: '68%' }}
-      borderRadius="20px"
-      borderWidth="1px"
+      
+     
       position="relative"
       overflow="hidden"
       bg={colorMode=="dark"&&"gray.700"}
@@ -295,7 +295,7 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
         <>
           {(remoteStream || myStream) && (
             <Box position="relative" w="100%" h="100%" overflow="hidden"  padding= '0'
-                    margin='0' borderRadius="20px">
+                    margin='0' >
               {userDisconnect && (
                 <Box position="absolute" left="50%" top="50%" transform="translate(-50%, -50%)">
                   <Spinner size="xl" />
@@ -306,13 +306,12 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
                 <video
                   ref={remoteVideoRef}
                   autoPlay
-                  muted
                   style={{
                     height: isRemoteStreamPlaying ? '100%' : '0%',
                     width: isRemoteStreamPlaying ? '100%' : '0%',
                     padding: '0',
                     margin:'0',
-                    borderRadius: '20px',
+                    
                     objectFit: 'cover',
                   }}
                 />
@@ -326,7 +325,7 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
                   h={isRemoteStreamPlaying ? '40%' : '100%'}
                   w={isRemoteStreamPlaying ? '40%' : '100%'}
                   overflow="hidden"
-                  borderRadius="20px" 
+                
                   padding= '0'
                     margin='0'
                 >
@@ -339,7 +338,7 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
                     margin:'0',
                       height: '100%',
                       width: '100%',
-                      borderRadius: '20px',
+                   
                       objectFit: 'cover',
                     }}
                   />
@@ -398,7 +397,7 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
           
            <IconButton
               d={{ base: "flex", md: "none" }}
-              icon={<ArrowBackIcon />}
+              icon={<ArrowBackIcon  color={colorMode==="light"?"rgb(30 179 26)":"#ffff"}/>}
             />
         
         </Box>
