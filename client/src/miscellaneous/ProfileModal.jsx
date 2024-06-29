@@ -102,7 +102,7 @@ const postDetails = (pics) => {
       };
       
        const response = await axios.put(
-      "http://localhost:5000/api/chat/updatePic",
+      " /api/chat/updatePic",
       { updatedPic },
       config
     );

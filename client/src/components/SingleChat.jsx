@@ -5,7 +5,7 @@ import offline from "./animations/offine.json"
 import { Box, Text } from "@chakra-ui/layout";
 import "./styles.css";
 import { IconButton,  useToast,useColorMode,Avatar} from "@chakra-ui/react";
-import { getSender,getSenderFull } from "../config/ChatLogics";
+import { getSender,getSenderFull } from "../Config/ChatLogics";
 import { useEffect,  useState,useRef } from "react";
 import axios from "axios";
 import Popup from "./Popup"
@@ -173,7 +173,7 @@ const previousChatId = useRef(null);
       setLoading(true);
 
       const { data } = await axios.get(
-        `http://localhost:5000/api/message/${selectedChat._id}`,
+        ` /api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -306,7 +306,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
 
         // Use the trimmedMessage for sending
         const { data } = await axios.post(
-          "http://localhost:5000/api/message",
+          " /api/message",
           {
             content: trimmedMessage,
             chatId: selectedChat._id,
@@ -341,7 +341,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
           },
         };
         const { data } = await axios.post(
-          "http://localhost:5000/api/message/upload",
+          " /api/message/upload",
           {
             file: media,
             chatId: selectedChat._id,
@@ -397,7 +397,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
       };
       
         const { data } = await axios.put(
-          "http://localhost:5000/api/chat/deleteChat",
+          " /api/chat/deleteChat",
           {
             chatId: selectedChat._id,
           },
@@ -576,7 +576,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
                 h="100%"
               
         >
-          <RiseLoader size={10} color={"#4FA94D"} />
+          <RiseLoader size={10} color={colorMode=="light"?"#4FA94D":"#ffff"} />
         </Box>
             ) : (
               

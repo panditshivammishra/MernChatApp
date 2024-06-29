@@ -12,7 +12,7 @@ import {
   isSameSender,
   isSameSenderMargin,
   isSameUser,
-} from "../config/ChatLogics";
+} from "../Config/ChatLogics";
 
 const ScrollableChat = ({ messages,picLoading }) => {
   console.log(messages);

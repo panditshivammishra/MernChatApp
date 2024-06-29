@@ -63,7 +63,7 @@ const GroupChatModal = forwardRef(({ children }, ref) => {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:5000/api/user?search=${search}`,
+        ` /api/user?search=${search}`,
         config
       );
       setLoading(false);
@@ -105,7 +105,7 @@ const GroupChatModal = forwardRef(({ children }, ref) => {
         },
       };
       const { data } = await axios.post(
-        `http://localhost:5000/api/chat/group`,
+        ` /api/chat/group`,
         {
           name: groupChatName,
           users: JSON.stringify(
