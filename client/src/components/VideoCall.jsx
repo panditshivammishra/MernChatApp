@@ -41,22 +41,7 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   }
-  // useEffect(() => {
 
-  //   if (initiator) {
-  //      console.log(`maine initiate kar diya`)
-  //      const createStream=  async() => {
-  //       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-  //       setMyStream(stream);
-  //     }
-  //     createStream();
-  //   }
-
-  //   return () => {
-  //     if(myStream)
-  //        myStream.getTracks((track) => track.stop());
-  //   }
-  // },[])
 
   
   useEffect(() => {

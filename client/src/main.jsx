@@ -9,7 +9,6 @@ import { ChakraProvider,ColorModeScript } from '@chakra-ui/react'
 import "./App.css";
 import theme from './theme';
 
-import "./bg.jpg"
 
 
 

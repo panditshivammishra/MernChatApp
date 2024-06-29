@@ -33,7 +33,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain, videoCall, setVideoCall }) => {
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
-  const [callerData, setCallerData] = useState();
+
 const previousChatId = useRef(null);
   const [media, setMedia] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(new Set());
@@ -62,7 +62,7 @@ const previousChatId = useRef(null);
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { popup,setPopup,checkCallChat,setCheckCallChat,selectedChat, setSelectedChat, user, notification, setNotification,socket,setCallRoomId } =
+  const { popup,setPopup,checkCallChat,setCheckCallChat,selectedChat, setSelectedChat, user, notification, setNotification,socket,setCallRoomId,callerData, setCallerData } =
     ChatState();
   
 
@@ -201,12 +201,12 @@ const previousChatId = useRef(null);
 
 
 const handleFileSelect = () => {
-    // Trigger file input click
+   
     document.getElementById("fileInput").click();
   };
    
 
-  // Taking File URL from CLOUDINARY
+
 
 
   const postDetails = (file) => {
@@ -222,8 +222,8 @@ const handleFileSelect = () => {
     return;
   }
 
-  // Check if the file type is either an image or a video
-  const allowedTypes = ["image/jpeg", "image/png", "video/mp4"]; // Add more allowed types as needed
+  
+  const allowedTypes = ["image/jpeg", "image/png", "video/mp4"]; 
   if (!allowedTypes.includes(file.type)) {
     toast({
       title: "Please Select an Image or Video File!",
@@ -249,7 +249,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
   .then((data) => {
     setMedia(data.url.toString());
     
-    // Call sendMessage after setting the media
+
   })
   .catch((err) => {
     setPicLoading(false);
@@ -270,7 +270,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
 
 
 
-  //handling  video call
+
  
   const handleVideoCall = () => {
     const anotherUser = getSenderFull(user,selectedChat.users);
@@ -434,7 +434,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
       if (
-        !selectedChatCompare || // if chat is not selected or doesn't match current chat
+        !selectedChatCompare || 
         selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
         if (!notification.includes(newMessageRecieved)) {
@@ -581,7 +581,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
             ) : (
               
                 <Box className="messages" position="relative">
-                  {/* {console.log(`this is my messages ${messages}`)} */}
+                 
                   <ScrollableChat messages={messages} picLoading={ picLoading } />
               </Box>
             )}
@@ -620,7 +620,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
 
       <InputRightElement onClick={handleFileSelect} cursor="pointer"  marginRight="9">
         <BiImageAdd   color={colorMode==="light"?"rgb(30 179 26)":"#ffff"}  size="20px"/>
-        {/* File input hidden for triggering file select */}
+      
         <input
           id="fileInput"
           type="file"

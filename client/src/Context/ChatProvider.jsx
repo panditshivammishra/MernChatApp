@@ -11,7 +11,7 @@ const ChatProvider = ({ children }) => {
   const [popup, setPopup] = useState(false);
   const [callRoomId, setCallRoomId] = useState();
   const [checkCallChat, setCheckCallChat] = useState();
-  
+   const [callerData, setCallerData] = useState();
   const ENDPOINT = "http://localhost:5000";
   
 
@@ -44,7 +44,7 @@ const ChatProvider = ({ children }) => {
         notification,
         setNotification,
         chats,
-        setChats,socket,popup,setPopup,checkCallChat, setCheckCallChat,callRoomId, setCallRoomId
+        setChats,socket,popup,setPopup,checkCallChat, setCheckCallChat,callRoomId, setCallRoomId,callerData, setCallerData
       }}
     >
       {children}

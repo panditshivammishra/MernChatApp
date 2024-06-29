@@ -7,6 +7,7 @@ import { getSenderFull } from "../Config/ChatLogics";
 import ChatLoading from "./ChatLoading";
 import { ChatState } from "../Context/ChatProvider";
 import { FaSearch } from "react-icons/fa";
+import Popup from "./Popup";
 import "./styles.css";
 
 const MyChats = ({ fetchAgain }) => {
@@ -14,7 +15,7 @@ const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
   const [searchQuery, setSearchQuery] = useState(""); 
   const [loading, setLoading] = useState(true); 
-  const { selectedChat, setSelectedChat, user, chats, setChats, socket } = ChatState();
+  const { selectedChat, setSelectedChat, user, chats, setChats, socket,callerData,popup,setPopup } = ChatState();
   const toast = useToast();
 
   useEffect(() => {
@@ -71,6 +72,10 @@ const MyChats = ({ fetchAgain }) => {
   });
 
   return (
+    <>
+      
+      {popup && <Popup data={callerData} popup={popup} setPopup={setPopup} />}
+      
     <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
@@ -153,7 +158,8 @@ const MyChats = ({ fetchAgain }) => {
           <Text display="inline-flex" alignItems="center" justifyContent="center" py="12px">Add Users To Chat</Text>
         )}
       </Box>
-    </Box>
+      </Box>
+      </>
   );
 };
 

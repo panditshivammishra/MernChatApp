@@ -7,7 +7,7 @@ import {
   PopoverArrow,
   PopoverCloseButton,
 } from '@chakra-ui/react';
-import ChatState from '../Context/ChatProvider';
+
 export default function Popup({ data,popup,setPopup}) {
     // const { popup, setPopup } = ChatState();
   console.log("You are in Popup Component");
