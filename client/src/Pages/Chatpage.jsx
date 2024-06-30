@@ -13,7 +13,7 @@ const Chatpage = () => {
       
       {user&&<ChatControl/>}
 
-    <Box display="flex" position="relative" flexDirection="column" style={{ width: "95%" }} h="99%" >
+    <Box display="flex" position="relative" flexDirection="column" style={{ width: "95%" }}  >
      
         {user &&<SideDrawer />}
 
