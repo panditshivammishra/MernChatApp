@@ -15,12 +15,11 @@ import {
 } from "../Config/ChatLogics";
 
 const ScrollableChat = ({ messages,picLoading }) => {
-  console.log(messages);
   const {colorMode}=useColorMode()
   const [messageTimes, setMessageTimes] = useState({});
   const { user } = ChatState();
    useEffect(() => {
-    // Update time for each message
+    
     const updatedTimes = {};
     messages.forEach((m) => {
       const dateObject = new Date(m.updatedAt);
@@ -30,7 +29,7 @@ const ScrollableChat = ({ messages,picLoading }) => {
     });
 
     setMessageTimes(updatedTimes);
-   }, [messages]); // Trigger update when messages change
+   }, [messages]); 
   
   
   const formatTime = (time) => {
@@ -55,7 +54,7 @@ const ScrollableChat = ({ messages,picLoading }) => {
                 />
               </Tooltip>
               )}
-            {/* #BEE3F8  #086f5b  "#054d40" "gray.900" */}
+           
             <Box position="relative" fontWeight="500" color="#ffff" backgroundColor= {
                   m.sender._id === user._id ? `${colorMode==='light'?"rgb(42 252 37 )":"#0b6c5b"}` : `${colorMode==='light'?"#03527f":"gray.900"}`
                 } display="flex" justifyContent="center" flexDirection={m.content.length==0&&"column"} alignItems="center" style={{

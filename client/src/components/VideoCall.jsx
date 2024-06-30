@@ -9,7 +9,7 @@ import { Box, Spinner, IconButton ,useColorMode} from '@chakra-ui/react';
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import peer from "./Service/peer";
 import { Radio,RotatingLines } from 'react-loader-spinner'
-const VideoCall = ({ setVideoCall, videoCall }) => {
+const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
   const { colorMode } = useColorMode();
   const { socket, selectedChat, setCheckCallChat, checkCallChat, callRoomId, setCallRoomId } = ChatState();
   const [remoteSocketId, setRemoteSocketId] = useState(null);
@@ -46,6 +46,7 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
   
   useEffect(() => {
     if (leaveVideoCallPage && videoCall) {
+      setFetchAgain(!fetchAgain)
       setVideoCall(false);
     }
   }, [leaveVideoCallPage, selectedChat]);
@@ -161,6 +162,7 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
 
     socket.emit('leave-room', callRoomId);
     setleaveVideoCallPage(true);
+
   };
 
   const handleEndCall = () => {
@@ -322,7 +324,6 @@ const VideoCall = ({ setVideoCall, videoCall }) => {
                     margin:'0',
                       height: '100%',
                       width: '100%',
-                   
                       objectFit: 'cover',
                     }}
                   />

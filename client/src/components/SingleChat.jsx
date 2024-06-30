@@ -4,7 +4,7 @@ import online from "./animations/online.json"
 import offline from "./animations/offine.json"
 import { Box, Text } from "@chakra-ui/layout";
 import "./styles.css";
-import { IconButton,  useToast,useColorMode,Avatar} from "@chakra-ui/react";
+import { useToast,useColorMode,Avatar} from "@chakra-ui/react";
 import { getSender,getSenderFull } from "../Config/ChatLogics";
 import { useEffect,  useState,useRef } from "react";
 import axios from "axios";
@@ -29,7 +29,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain, videoCall, setVideoCall }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
-  const [socketConnected, setSocketConnected] = useState(false);
+  const [typingRoom, setTypingRoom] = useState();
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
@@ -73,7 +73,6 @@ const previousChatId = useRef(null);
  useEffect(() => {
    if (selectedChat && (selectedChat._id === checkCallChat)) {
        socket.emit('leaveRoom', {checkCallChat,to:socket.id});
-   
       setCallRoomId(checkCallChat);
       socket.emit("join-room", checkCallChat);
       setVideoCall(true);
@@ -84,16 +83,23 @@ const previousChatId = useRef(null);
        if (selectedChat && (selectedChat._id === checkCallChat)) 
         socket.off('join-room');
     }
-  }, [selectedChat,checkCallChat]);
+ }, [selectedChat, checkCallChat]);
+  
+  
+  
        useEffect(() => {
     
-    socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () => setIsTyping(true));
+        
+         socket.on("typing", (roomId) => {
+           setIsTyping(true);
+           setTypingRoom(roomId);
+          }
+         )
     socket.on("stop typing", () => setIsTyping(false));
    
          socket.on('user-online', (data) => {
            socket.emit('i also online',{userId:data,from:user._id});
-         ;
+  
        setOnlineUsers((prevOnlineUsers) => {
       const newOnlineUsers = new Set(prevOnlineUsers);
        newOnlineUsers.add(data);
@@ -119,6 +125,8 @@ const previousChatId = useRef(null);
              return newOnlineUsers;
            });
          });
+
+
     socket.on('Do-videoCall', (roomId) => {
       console.log("User room join kro video call ke liye");
       setCallRoomId(roomId);
@@ -132,15 +140,17 @@ const previousChatId = useRef(null);
   newOnlineUsers.delete(userId);
   return newOnlineUsers;
 });
-         })
+         })             
     return () => {
       // Do not disconnect the socket here
-
-      socket.off("connected");
+   
       socket.off("typing");
       socket.off("stop typing");
       socket.off("incoming-call");
       socket.off("Do-videoCall");
+      socket.off("offline-him");
+      socket.off("make me online")
+      socket.off("user-online")
     };
   }, [socket, user,selectedChat]); 
   
@@ -191,6 +201,9 @@ const previousChatId = useRef(null);
       });
     }
   };
+
+
+
   const handleonpress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault()
@@ -286,7 +299,8 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
 
 
   const sendMessage = async () => {
- 
+    
+
     const trimmedMessage = newMessage.trim();
     setNewMessage(trimmedMessage);
 
@@ -313,8 +327,8 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
           },
           config
         );
-
       
+        console.log("here to emit message");
         socket.emit("new message", data);
         setMessages([...messages, data]);
         
@@ -446,25 +460,44 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
       }
     });
   });
+let lastTypingTime; 
 
-  const typingHandler = (e) => {
-    setNewMessage(e.target.value);
-    if (!socketConnected) return;   
-    if (!typing) {
-      setTyping(true);
-      socket.emit("typing", selectedChat._id);
+const typingHandler = (e) => {
+    const message = e.target.value;
+    const trimmedMessage = message.trim();
+
+   
+    setNewMessage(message);
+
+   
+    if (trimmedMessage.length > 0 && trimmedMessage !== newMessage.trim()) {
+        if (!typing) {
+            setTyping(true);
+            socket.emit("typing", selectedChat._id);
+        }
+        lastTypingTime = new Date().getTime();
+
+
+        const timerLength = 3000;
+        setTimeout(() => {
+            const timeNow = new Date().getTime();
+            const timeDiff = timeNow - lastTypingTime;
+
+          
+            if (timeDiff >= timerLength && typing) {
+                socket.emit("stop typing", selectedChat._id);
+                setTyping(false);
+            }
+        }, timerLength);
+    } else if (trimmedMessage.length === 0) {
+        
+        if (typing) {
+            socket.emit("stop typing", selectedChat._id);
+            setTyping(false);
+        }
     }
-    let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
-    setTimeout(() => {
-      var timeNow = new Date().getTime();
-      var timeDiff = timeNow - lastTypingTime;
-      if (timeDiff >= timerLength && typing) {
-        socket.emit("stop typing", selectedChat._id);
-        setTyping(false);
-      }
-    }, timerLength);
-  };
+};
+
 
   return (
     <>
@@ -592,7 +625,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
               isRequired
               mt={3}
             >
-              {istyping ? (
+              {(istyping&&(selectedChat&&selectedChat._id==typingRoom)) ? (
                 <div >
                   <Lottie
                     options={defaultOptions}

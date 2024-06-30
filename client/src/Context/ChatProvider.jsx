@@ -12,9 +12,8 @@ const ChatProvider = ({ children }) => {
   const [callRoomId, setCallRoomId] = useState();
   const [checkCallChat, setCheckCallChat] = useState();
    const [callerData, setCallerData] = useState();
-  const ENDPOINT = " ";
+  const ENDPOINT = "http://localhost:5000";
   
-
   const socket = useMemo(() => io(ENDPOINT), []);
   
 
@@ -27,7 +26,6 @@ const ChatProvider = ({ children }) => {
   useEffect(() => {
   if (user) { // Check if user is defined before using it
     socket.emit("setup", user._id);
-    
     }
     
     return () => {

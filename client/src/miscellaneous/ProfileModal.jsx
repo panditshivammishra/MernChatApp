@@ -29,7 +29,7 @@ const ProfileModal = ({ children }) => {
   const [updatedPic, setUpdatedPic] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const fileInputRef = useRef();
-  const [imageClicked, setImageClicked] = useState(false); // Track image click state
+  const [imageClicked, setImageClicked] = useState(false); 
 
   if (cloneUser == null) setCloneUser(user);
 
@@ -105,6 +105,14 @@ const ProfileModal = ({ children }) => {
       localStorage.setItem('userInfo', JSON.stringify(updatedUser));
       setPicLoading(false);
       setUser(updatedUser);
+
+       toast({
+        title: 'Profile pic updated',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
     } catch (error) {
       console.error('Error updating profile pic:', error);
       setPicLoading(false);
@@ -114,7 +122,7 @@ const ProfileModal = ({ children }) => {
         status: 'error',
         duration: 5000,
         isClosable: true,
-        position: 'bottom',
+        position: 'top',
       });
     }
   };
@@ -195,7 +203,7 @@ const ProfileModal = ({ children }) => {
                 onChange={(e) => postDetails(e.target.files[0])}
               />
             </Box>
-            <Text fontSize={{ base: '28px', md: '30px' }} >
+            <Text fontSize={{ base: '5vw', md: '30px' }} >
               Email: {user.email}
             </Text>
           </ModalBody>

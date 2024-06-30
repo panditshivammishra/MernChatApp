@@ -25,7 +25,7 @@ const httpserver = createServer(app);
 const io =new Server(httpserver, {
   pingTimeout: 60000,   
     cors: {
-    origin: "http://localhost:5173",
+    origin: "*",
     methods: ["GET", "POST"]
   },
 }); 
@@ -40,9 +40,6 @@ io.on("connection", (socket) => {
     SocketToId[socket.id] = userId;
 
     socket.join(userId);
-
-
-
     socket.emit("connected"); 
   });
  
@@ -52,7 +49,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", (room) => {
-  socket.broadcast.to(room).emit("typing");
+  socket.broadcast.to(room).emit("typing",room);
 });
 
 socket.on("stop typing", (room) => {
@@ -105,31 +102,18 @@ socket.on("stop typing", (room) => {
     io.to(to).emit("call-accepted", { from: socket.id, ans });
   })
   
-//   socket.off('user-connected', () => {
-//      console.log(`I am leaving the room with id in userConnected ${callRoomId} ans socket id ${to}`);
-//     socket.leave(callRoomId);
-// })
 
    socket.on("peer:nego:needed", ({ to, offer }) => {
-    // console.log("peer:nego:needed", offer);
+   
     io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
   });
 
   socket.on("peer:nego:done", ({ to, ans }) => {
 
-    // console.log("peer:nego:done", ans);
   
     io.to(to).emit("peer:nego:final", { from: socket.id, ans });
   });
-  // socket.on('accept-call', (data) => {
-  //   const { roomId } = data;
-  //   io.to(roomId).emit('call-accepted');
-  // });
-
-  // socket.on('decline-call', (data) => {
-  //   const { roomId, callerId } = data;
-  //   io.to(roomId).emit('call-declined', { callerId });
-  // });
+  
 
   socket.on('end-call', (from) => {
    
