@@ -1,3 +1,4 @@
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
@@ -6,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://updatedchatappbackend.onrender.com',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\//, '')
@@ -16,4 +17,4 @@ export default defineConfig({
 });
 
 
-// https://chatappbackend-zgp7.onrender.com
+// // https://chatappbackend-zgp7.onrender.com

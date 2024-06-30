@@ -96,7 +96,7 @@ const ProfileModal = ({ children }) => {
       };
 
       const response = await axios.put(
-        ' https://updatedchatappbackend.onrender.com/api/chat/updatePic',
+        '/api/chat/updatePic',
         { updatedPic },
         config
       );

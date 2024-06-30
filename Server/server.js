@@ -12,12 +12,14 @@ dotenv.config();
 connectDB();  
 const app = express();
 const PORT = process.env.PORT||5000;
-
+app.get("/", (req, res) => {
+  res.send("hello i am server")
+})
 app.use(cors()); 
 app.use(express.json());
-app.use(" https://updatedchatappbackend.onrender.com/api/user", router);
-app.use(" https://updatedchatappbackend.onrender.com/api/chat", chatRouter);
-app.use(" https://updatedchatappbackend.onrender.com/api/message", messageRouter);
+app.use("/api/user", router);
+app.use("/api/chat", chatRouter);
+app.use("/api/message", messageRouter);
 
 const httpserver = createServer(app);
 

@@ -5,7 +5,6 @@ import { VStack } from "@chakra-ui/layout";
 import { useState } from "react";
 import axios from "axios";
 import { useColorMode, useToast} from "@chakra-ui/react";
-// import { ChatState } from "../../Context/ChatProvider";
 
 const Login = () => {
  const {colorMode}=useColorMode
@@ -41,7 +40,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        "https://updatedchatappbackend.onrender.com/api/user/login",
+        "/api/user/login",
         { email, password },
         config
       );
