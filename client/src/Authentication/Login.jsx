@@ -41,7 +41,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        "/api/user/login",
+        "https://updatedchatappbackend.onrender.com/api/user/login",
         { email, password },
         config
       );
@@ -72,7 +72,7 @@ const Login = () => {
 
   return (
     <VStack spacing="10px">
-      <FormControl id="email" isRequired>
+      <FormControl  isRequired>
         <FormLabel>Email Address</FormLabel>
         <Input
           
@@ -81,7 +81,7 @@ const Login = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <FormControl id="password" isRequired>
+      <FormControl  isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup size="md">
           <Input

@@ -183,7 +183,7 @@ const previousChatId = useRef(null);
       setLoading(true);
 
       const { data } = await axios.get(
-        ` /api/message/${selectedChat._id}`,
+        `  https://updatedchatappbackend.onrender.com/api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -320,7 +320,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
 
         // Use the trimmedMessage for sending
         const { data } = await axios.post(
-          " /api/message",
+          "  https://updatedchatappbackend.onrender.com/api/message",
           {
             content: trimmedMessage,
             chatId: selectedChat._id,
@@ -355,7 +355,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
           },
         };
         const { data } = await axios.post(
-          " /api/message/upload",
+          "  https://updatedchatappbackend.onrender.com/api/message/upload",
           {
             file: media,
             chatId: selectedChat._id,
@@ -411,7 +411,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
       };
       
         const { data } = await axios.put(
-          " /api/chat/deleteChat",
+          "  https://updatedchatappbackend.onrender.com/api/chat/deleteChat",
           {
             chatId: selectedChat._id,
           },

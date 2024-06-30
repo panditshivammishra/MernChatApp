@@ -49,7 +49,7 @@ const accessChat = asyncHandler(async (req, res) => {
 });
 
 //@description     Fetch all chats for a user
-//@route           GET /api/chat/
+//@route           GET  https://updatedchatappbackend.onrender.com/api/chat/
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
   try {
@@ -106,7 +106,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
 });
 
 // @desc    Rename Group
-// @route   PUT /api/chat/rename
+// @route   PUT  https://updatedchatappbackend.onrender.com/api/chat/rename
 // @access  Protected
 const renameGroup = asyncHandler(async (req, res) => {
   const { chatId, chatName } = req.body;
@@ -132,7 +132,7 @@ const renameGroup = asyncHandler(async (req, res) => {
 });
 
 // @desc    Remove user from Group
-// @route   PUT /api/chat/groupremove
+// @route   PUT  https://updatedchatappbackend.onrender.com/api/chat/groupremove
 // @access  Protected
 const removeFromGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
@@ -160,7 +160,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
 });
 
 // @desc    Add user to Group / Leave
-// @route   PUT /api/chat/groupadd
+// @route   PUT  https://updatedchatappbackend.onrender.com/api/chat/groupadd
 // @access  Protected
 const addToGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;

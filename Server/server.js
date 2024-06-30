@@ -15,9 +15,9 @@ const PORT = process.env.PORT||5000;
 
 app.use(cors()); 
 app.use(express.json());
-app.use("/api/user", router);
-app.use("/api/chat", chatRouter);
-app.use("/api/message", messageRouter);
+app.use(" https://updatedchatappbackend.onrender.com/api/user", router);
+app.use(" https://updatedchatappbackend.onrender.com/api/chat", chatRouter);
+app.use(" https://updatedchatappbackend.onrender.com/api/message", messageRouter);
 
 const httpserver = createServer(app);
 

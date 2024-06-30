@@ -63,7 +63,7 @@ const GroupChatModal = forwardRef(({ children }, ref) => {
         },
       };
       const { data } = await axios.get(
-        ` /api/user?search=${search}`,
+        `  https://updatedchatappbackend.onrender.com/api/user?search=${search}`,
         config
       );
       setLoading(false);
@@ -105,7 +105,7 @@ const GroupChatModal = forwardRef(({ children }, ref) => {
         },
       };
       const { data } = await axios.post(
-        ` /api/chat/group`,
+        `  https://updatedchatappbackend.onrender.com/api/chat/group`,
         {
           name: groupChatName,
           users: JSON.stringify(
