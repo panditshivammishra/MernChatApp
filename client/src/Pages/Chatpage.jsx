@@ -17,7 +17,7 @@ const Chatpage = () => {
      
         {user &&<SideDrawer />}
 
-      <Box display="flex" justifyContent="space-between" w="100%" h="90vh" position="relative">
+      <Box display="flex" justifyContent="space-between" w="100%" h="92vh" position="relative">
         
        
         {user && (
