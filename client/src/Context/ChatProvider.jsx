@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import io from "socket.io-client";
+const apiUrl = import.meta.env.VITE_API_URL;
 const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
@@ -11,8 +12,9 @@ const ChatProvider = ({ children }) => {
   const [popup, setPopup] = useState(false);
   const [callRoomId, setCallRoomId] = useState();
   const [checkCallChat, setCheckCallChat] = useState();
-   const [callerData, setCallerData] = useState();
-  const ENDPOINT = "https://final-chat-app-backend.onrender.com";
+  const [callerData, setCallerData] = useState();
+  
+  const ENDPOINT = `${apiUrl}`;
   
   const socket = useMemo(() => io(ENDPOINT), []);
   
