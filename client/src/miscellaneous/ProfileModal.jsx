@@ -19,7 +19,8 @@ import {
 } from '@chakra-ui/react';
 import { useToast } from '@chakra-ui/toast';
 import { FaCamera } from 'react-icons/fa';
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const cloud = import.meta.env.VITE_CLOUD;
 const ProfileModal = ({ children }) => {
   const [imageUrl, setImageUrl] = useState();
   const [cloneUser, setCloneUser] = useState(null);
@@ -60,7 +61,7 @@ const ProfileModal = ({ children }) => {
       data.append('upload_preset', 'shivamapp');
       data.append('cloud_name', 'dltghciqz');
 
-      fetch('https://api.cloudinary.com/v1_1/dltghciqz/upload', {
+      fetch(`${cloud}`, {
         method: 'post',
         body: data,
       })
@@ -96,7 +97,7 @@ const ProfileModal = ({ children }) => {
       };
 
       const response = await axios.put(
-        ' https://final-chat-app-backend.onrender.com/api/chat/updatePic',
+       `${apiUrl}/api/chat/updatePic`,
         { updatedPic },
         config
       );

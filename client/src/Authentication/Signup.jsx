@@ -5,6 +5,8 @@ import { VStack } from "@chakra-ui/layout";
 import {useToast} from "@chakra-ui/toast"
 import axios from "axios";
 import { useState } from "react";
+const apiUrl = import.meta.env.VITE_API_URL;
+const cloud = import.meta.env.VITE_CLOUD;
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -48,7 +50,7 @@ const Signup = () => {
         },
       };
  const { data } = await axios.post(
-  "https://final-chat-app-backend.onrender.com/api/user", 
+ `${apiUrl}/api/user`, 
   {
     name,
     email,
@@ -99,12 +101,19 @@ const Signup = () => {
       data.append("file", pics);
       data.append("upload_preset", "shivamapp");
       data.append("cloud_name", "dltghciqz");
-      fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
+      fetch(`${cloud}`, {
         method: "post",
         body: data,
       })
         .then((res) => res.json())
         .then((data) => {
+           toast({
+        title: "upladed successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
           setPic(data.url.toString());
           console.log(data.url.toString());
           setPicLoading(false);

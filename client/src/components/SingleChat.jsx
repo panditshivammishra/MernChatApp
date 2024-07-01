@@ -22,7 +22,8 @@ import { Tooltip } from "@chakra-ui/tooltip";
 import RiseLoader from 'react-spinners/RiseLoader';
 import {DeleteIcon} from '@chakra-ui/icons'
 var  selectedChatCompare;
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const cloud = import.meta.env.VITE_CLOUD;
 const SingleChat = ({ fetchAgain, setFetchAgain, videoCall, setVideoCall }) => {
   const [picLoading, setPicLoading] = useState(false);
   const { colorMode } = useColorMode();
@@ -183,7 +184,7 @@ const previousChatId = useRef(null);
       setLoading(true);
 
       const { data } = await axios.get(
-        `https://final-chat-app-backend.onrender.com/api/message/${selectedChat._id}`,
+        `${apiUrl}/api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -254,7 +255,7 @@ const handleFileSelect = () => {
   data.append("cloud_name", "dltghciqz");
 
 
-fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
+fetch(`${cloud}`, {
   method: "post",
   body: data,
 })
@@ -319,7 +320,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
         setNewMessage("");
 
         const { data } = await axios.post(
-          "https://final-chat-app-backend.onrender.com/api/message",
+          `${apiUrl}/api/message`,
           {
             content: trimmedMessage,
             chatId: selectedChat._id,
@@ -354,7 +355,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
           },
         };
         const { data } = await axios.post(
-          "https://final-chat-app-backend.onrender.com/api/message/upload",
+        `${apiUrl}/api/message/upload`,
           {
             file: media,
             chatId: selectedChat._id,
@@ -410,7 +411,7 @@ fetch("https://api.cloudinary.com/v1_1/dltghciqz/upload", {
       };
       
         const { data } = await axios.put(
-          "/api/chat/deleteChat",
+          `${apiUrl}/api/chat/deleteChat`,
           {
             chatId: selectedChat._id,
           },

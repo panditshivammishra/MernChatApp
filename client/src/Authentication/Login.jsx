@@ -5,7 +5,7 @@ import { VStack } from "@chakra-ui/layout";
 import { useState } from "react";
 import axios from "axios";
 import { useColorMode, useToast} from "@chakra-ui/react";
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const Login = () => {
  const {colorMode}=useColorMode
   const [show, setShow] = useState(false);
@@ -40,7 +40,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        "https://final-chat-app-backend.onrender.com/api/user/login",
+        `${apiUrl}/api/user/login`,
         { email, password },
         config
       );

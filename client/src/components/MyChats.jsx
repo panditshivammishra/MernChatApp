@@ -9,6 +9,7 @@ import { ChatState } from "../Context/ChatProvider";
 import { FaSearch } from "react-icons/fa";
 import Popup from "./Popup";
 import "./styles.css";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const MyChats = ({ fetchAgain }) => {
   const { colorMode } = useColorMode();
@@ -37,7 +38,7 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
 
-      const { data } = await axios.get("https://final-chat-app-backend.onrender.com/api/chat", config);
+      const { data } = await axios.get(`${apiUrl}/api/chat`, config);
       
 
       setChats(data);

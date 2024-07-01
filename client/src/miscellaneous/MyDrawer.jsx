@@ -15,7 +15,7 @@ import { useToast } from '@chakra-ui/toast';
 import UserListItem from '../userAvatar/UserListItem';
 import ChatLoading from '../components/ChatLoading';
 import { ChatState } from '../Context/ChatProvider';
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const MyDrawer = ({ isOpen, onClose }) => {
   const toast = useToast();
   const { user, setSelectedChat, chats, setChats } = ChatState();
@@ -43,7 +43,7 @@ const MyDrawer = ({ isOpen, onClose }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`https://final-chat-app-backend.onrender.com/api/user?search=${search}`, config);
+      const { data } = await axios.get(`${apiUrl}/api/user?search=${search}`, config);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -67,7 +67,7 @@ const MyDrawer = ({ isOpen, onClose }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post(`https://final-chat-app-backend.onrender.com/api/chat`, { userId }, config);
+      const { data } = await axios.post(`${apiUrl}/api/chat`, { userId }, config);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
       setLoadingChat(false);

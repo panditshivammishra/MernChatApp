@@ -21,7 +21,7 @@ import { ChatState } from "../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
 import ChatLoading from "../components/ChatLoading";
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const GroupChatModal = forwardRef(({ children }, ref) => {
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -63,7 +63,7 @@ const GroupChatModal = forwardRef(({ children }, ref) => {
         },
       };
       const { data } = await axios.get(
-        `https://final-chat-app-backend.onrender.com/api/user?search=${search}`,
+        `${apiUrl}/api/user?search=${search}`,
         config
       );
       setLoading(false);
@@ -105,7 +105,7 @@ const GroupChatModal = forwardRef(({ children }, ref) => {
         },
       };
       const { data } = await axios.post(
-        `https://final-chat-app-backend.onrender.com/api/chat/group`,
+        `${apiUrl}/api/chat/group`,
         {
           name: groupChatName,
           users: JSON.stringify(
