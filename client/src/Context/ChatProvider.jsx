@@ -12,7 +12,7 @@ const ChatProvider = ({ children }) => {
   const [callRoomId, setCallRoomId] = useState();
   const [checkCallChat, setCheckCallChat] = useState();
    const [callerData, setCallerData] = useState();
-  const ENDPOINT = "http://localhost:5000";
+  const ENDPOINT = "https://final-chat-app-backend.onrender.com";
   
   const socket = useMemo(() => io(ENDPOINT), []);
   
