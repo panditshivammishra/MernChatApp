@@ -11,14 +11,16 @@ import Popup from "./Popup";
 import "./styles.css";
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const MyChats = ({ fetchAgain }) => {
+const MyChats = ({ fetchAgain}) => {
   const { colorMode } = useColorMode();
   const [loggedUser, setLoggedUser] = useState();
   const [searchQuery, setSearchQuery] = useState(""); 
   const [loading, setLoading] = useState(true); 
   const { selectedChat, setSelectedChat, user, chats, setChats, socket,callerData,popup,setPopup } = ChatState();
   const toast = useToast();
-
+   
+ 
+    
   useEffect(() => {
     if (chats) {
       chats.forEach((element) => {
@@ -62,6 +64,42 @@ const MyChats = ({ fetchAgain }) => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
   }, [fetchAgain]);
+
+
+  useEffect(() => {
+    socket.on("fetch chat", () => {
+      fetchChats();
+  })
+},[socket])
+
+
+useEffect(() => {
+  const handleRefresh = (chatId) => {
+   
+    
+    if (selectedChat && selectedChat._id === chatId) {
+      setSelectedChat(null);
+      toast({
+        title: "You get removed",
+        description: `${getSenderFull(user, selectedChat.users).name} not want to chat with you`,
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+    fetchChats();
+  };
+
+  socket.on("refresh", handleRefresh);
+
+  
+  return () => {
+    socket.off("refresh", handleRefresh);
+  };
+}, [socket, selectedChat, user, fetchChats, getSenderFull]);
+
+
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);

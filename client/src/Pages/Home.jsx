@@ -44,7 +44,7 @@ function Home() {
             <TabPanel>
               <Login />
             </TabPanel>
-            <TabPanel>
+            <TabPanel id="signup">
               <Signup/>
             </TabPanel>
           </TabPanels>

@@ -24,7 +24,7 @@ import {DeleteIcon} from '@chakra-ui/icons'
 var  selectedChatCompare;
 const apiUrl = import.meta.env.VITE_API_URL;
 const cloud = import.meta.env.VITE_CLOUD;
-const SingleChat = ({ fetchAgain, setFetchAgain, videoCall, setVideoCall }) => {
+const SingleChat = ({ fetchAgain, setFetchAgain,  setVideoCall }) => {
   const [picLoading, setPicLoading] = useState(false);
   const { colorMode } = useColorMode();
   const [messages, setMessages] = useState([]);
@@ -100,7 +100,7 @@ const previousChatId = useRef(null);
    
          socket.on('user-online', (data) => {
            socket.emit('i also online',{userId:data,from:user._id});
-  
+          //  setFetchAgain(!fetchAgain);
        setOnlineUsers((prevOnlineUsers) => {
       const newOnlineUsers = new Set(prevOnlineUsers);
        newOnlineUsers.add(data);
@@ -113,13 +113,13 @@ const previousChatId = useRef(null);
           setCheckCallChat(data.chatId);
           setCallerData(data);
      
-      if ((selectedChat == null) || (selectedChat._id != data.chatId)) {
+      if ((selectedChat === null) || (selectedChat._id !== data.chatId)) {
         setPopup(true);
       } 
     });
      
          socket.on("make me online", (data) => {
-         
+          // setFetchAgain(!fetchAgain);
            setOnlineUsers((prevOnlineUsers) => {
              const newOnlineUsers = new Set(prevOnlineUsers);
              newOnlineUsers.add(data);
@@ -135,16 +135,19 @@ const previousChatId = useRef(null);
     });
          
          
-    socket.on("offline-him", (userId) => {
+         socket.on("offline-him", (userId) => {
+          
       setOnlineUsers((prevOnlineUsers) => {
   const newOnlineUsers = new Set(prevOnlineUsers); 
   newOnlineUsers.delete(userId);
   return newOnlineUsers;
 });
-         })             
+         })   
+        
+        
     return () => {
       // Do not disconnect the socket here
-   
+     
       socket.off("typing");
       socket.off("stop typing");
       socket.off("incoming-call");
@@ -189,7 +192,7 @@ const previousChatId = useRef(null);
       );
       setMessages(data);
       setLoading(false);
-
+      
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
@@ -416,9 +419,11 @@ fetch(`${cloud}`, {
             chatId: selectedChat._id,
           },
           config
-        );
-     
+      );
+      console.log(`user to which delte req send id ${getSenderFull(user, selectedChat.users)._id}`);
+      socket.emit("chat-deleted",({to:getSenderFull(user, selectedChat.users)._id,chatId:selectedChat._id}));
       setSelectedChat();
+      
       setFetchAgain(!fetchAgain);
       fetchMessages();
         toast({

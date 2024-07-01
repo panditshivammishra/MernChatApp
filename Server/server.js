@@ -37,7 +37,7 @@ let chatHistory = {};
 io.on("connection", (socket) => {
    
   socket.on("setup", (userId) => {
-    console.log("I am in setUp");
+ 
     users[userId] = socket.id;
     SocketToId[socket.id] = userId;
 
@@ -45,6 +45,21 @@ io.on("connection", (socket) => {
     socket.emit("connected"); 
   });
  
+  socket.on("chat-deleted", ({to,chatId}) => {
+  console.log(`delete the chat with roomId ${to}`);
+  console.log(`socketId ${users[to]}`);
+    io.to(users[to]).emit("refresh", chatId);
+    
+});
+
+  socket.on("i am adding", (roomId) => {
+    console.log(`rooom Id roomId ${roomId}`);
+
+    io.to(users[roomId]).emit("fetch chat");
+  })   
+  
+
+
   socket.on("join chat", (room) => {
     socket.join(room);
   
@@ -77,7 +92,7 @@ socket.on("stop typing", (room) => {
   //Video Calling signalling
   
   socket.on('join-room', (roomId) => {
-    console.log("join room for video CAll as a calleee");
+   
     const Id = socket.id;
      io.to(roomId).emit("user-connected", {roomId,Id});
     socket.join(roomId);
@@ -88,7 +103,7 @@ socket.on("stop typing", (room) => {
     const { name, chatId, callerId, toRoom } = data;
   
     io.to(socket.id).emit("join-room", chatId);
-    console.log("I am Joined Chat room as caller");
+   
     socket.emit("Do-videoCall", chatId);
     io.to(toRoom).emit('incoming-call', { name, callerId, chatId });  
 
@@ -125,13 +140,13 @@ socket.on("stop typing", (room) => {
 
 
   socket.on('leave-room', (roomId) => {
-    console.log(`I am leaving the room with id ${roomId} and socketID ${socket.id}`);
+  
     socket.leave(roomId);
   
   })
   
   socket.on('leaveRoom', ({ checkCallChat, to}) => {
-    console.log(`socket of callee leaving room ${checkCallChat} before joining again the same room ${to}`);
+  
     socket.leave(checkCallChat);
 })
 
@@ -150,7 +165,7 @@ socket.on("stop typing", (room) => {
 
   
   socket.on('registerChat', ({ from, to }) => {
-        console.log("I am in register chat")
+       
         if (!chatHistory[from]) {
             chatHistory[from] = [];
         }
@@ -169,7 +184,7 @@ socket.on("stop typing", (room) => {
  
 
     socket.on('onlineUser', (userId) => {
-    console.log("User online:", userId);
+   
     if (chatHistory[userId]) {
       chatHistory[userId].forEach((connectedUserId) => {
         if (users[connectedUserId]) {
@@ -182,9 +197,8 @@ socket.on("stop typing", (room) => {
 
   
   socket.on("i also online",({userId,from}) => {
-    console.log("i also online");
-    // console.log(users[userId])
-    console.log(userId);
+   
+    
   socket.to(userId).emit('make me online',from)
 
 })
@@ -197,7 +211,7 @@ socket.on("stop typing", (room) => {
 
   
   socket.on("disconnect", () => {
-    console.log(SocketToId[socket.id]);
+    
   if (chatHistory[SocketToId[socket.id]]) {
       chatHistory[SocketToId[socket.id]].forEach((connectedUserId) => {
           io.to(connectedUserId).emit('offline-him', SocketToId[socket.id]);
@@ -208,7 +222,7 @@ socket.on("stop typing", (room) => {
      for (const [userId, socketId] of Object.entries(users)) {
        if (socketId === socket.id) {
         delete users[userId];
-        console.log(`User ${userId} removed from users.`);
+       
         break;
       }
     }

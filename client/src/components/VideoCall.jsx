@@ -8,7 +8,7 @@ import './styles.css';
 import { Box, Spinner, IconButton ,useColorMode} from '@chakra-ui/react';
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import peer from "./Service/peer";
-import { Radio,RotatingLines } from 'react-loader-spinner'
+import { Radio } from 'react-loader-spinner'
 const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
   const { colorMode } = useColorMode();
   const { socket, selectedChat, setCheckCallChat, checkCallChat, callRoomId, setCallRoomId } = ChatState();
@@ -53,7 +53,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
 
   const handleJoinedUser = (data) => {
     setRemoteSocketId(data.Id);
-    console.log(`User CONNECTED with remoteId ${data.Id}`);
+   
   };
 
   useEffect(() => {
@@ -127,7 +127,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
   const handleIncomingCall = async ({ from, offer }) => {
     setInitiator(false);
     setRemoteSocketId(from);
-    console.log("incoming call");
+   
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
     setMyStream(stream);
     const ans = await peer.getAnswer(offer);
@@ -142,7 +142,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
 
   const handleCallAccepted = ({ from, ans }) => {
     peer.setLocalDescription(ans);
-    console.log("Call Accepted!");
+   
     sendTrack();
   };
 
@@ -178,7 +178,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
   };
 
   const rejectCall =useCallback( () => {
-    console.log(`I am here in rejectCall remoteStream is ${myStream}`)
+   
     if (myStream) {
       myStream.getTracks().forEach(track => track.stop());
     }
@@ -192,12 +192,11 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
     }
     endAllStreams();
   },[myStream]);
-        console.log(`myStream = ${myStream}`)
-        console.log(`remotestream = ${remoteStream}`)
+       
   useEffect(() => {
     const handleConnectionStateChange = () => {
       if (peer.peer.connectionState === 'disconnected' || peer.peer.connectionState === 'failed' || peer.peer.connectionState === 'closed') {
-        // console.log('Connection state changed to disconnected/failed/closed');
+      
         setUserDisconnect(true);
       
         // rejectCall();

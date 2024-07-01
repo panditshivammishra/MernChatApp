@@ -15,15 +15,17 @@ import { useToast } from '@chakra-ui/toast';
 import UserListItem from '../userAvatar/UserListItem';
 import ChatLoading from '../components/ChatLoading';
 import { ChatState } from '../Context/ChatProvider';
+import { getSenderFull } from '../Config/ChatLogics';
 const apiUrl = import.meta.env.VITE_API_URL;
 const MyDrawer = ({ isOpen, onClose }) => {
+
   const toast = useToast();
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const { user, setSelectedChat, chats, setChats,socket} = ChatState();
   const [search, setSearch] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-
+  
   const handleSearch = async () => {
     if (!search) {
       toast({
@@ -70,6 +72,8 @@ const MyDrawer = ({ isOpen, onClose }) => {
       const { data } = await axios.post(`${apiUrl}/api/chat`, { userId }, config);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
+      
+      socket.emit("i am adding", getSenderFull(user, data.users)._id);
       setLoadingChat(false);
       onClose(); // Close the drawer after selecting a chat
     } catch (error) {
