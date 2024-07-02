@@ -694,9 +694,37 @@ const typingHandler = (e) => {
       ) : (
         // to get socket.io on same page
         <Box display="flex" alignItems="center" justifyContent="center" h="100%" w="100%" bg={colorMode=="light"?"green":"gray.700"} borderBottomRadius="6px">
-          <Text fontSize="3xl" color="#ffff" fontWeight="800" pb={3} fontFamily="Work sans">
-            Click on a user to start chatting
-          </Text>
+          <Text className="chatText" pb={3}>
+      <span>C</span>
+      <span>l</span>
+      <span>i</span>
+      <span>c</span>
+      <span>k</span>
+              <span> </span>
+                <span> </span>
+      <span>o</span>
+      <span>n</span>
+              <span> </span>
+              <span> </span>
+              
+      <span>a</span>
+              <span> </span>
+                <span> </span>
+      <span>u</span>
+      <span>s</span>
+      <span>e</span>
+              <span>r</span>
+                <span> </span>
+                <span> </span>
+      <span>t</span>
+              <span>o</span>
+                <span> </span>
+      <span> </span>
+      <span>c</span>
+      <span>h</span>
+      <span>a</span>
+      <span>t</span>
+    </Text>
         </Box>
       )}
     </>

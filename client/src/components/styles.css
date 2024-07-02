@@ -173,3 +173,125 @@ padding:7px;
   }
 
 
+
+
+
+
+
+.text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 5xl;
+    background: linear-gradient(to right, #2E3A75, #357C6A, #8F8F70);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.text span {
+    background: linear-gradient(to right, #2E3A75, #357C6A, #8F8F70);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-size: 3rem;
+    animation: bounce 5s infinite;
+    font-weight: 700;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(1.2);
+    }
+
+    25% {
+        transform: scale(1.1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1.26);
+    }
+}
+
+
+
+
+
+
+
+.chatText {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  
+  
+    color: #ffff;
+}
+
+.chatText span {
+    
+    color:rgb(214, 223, 224);
+    font-weight: 700;
+    font-size: 2.6rem;
+    margin-right: 5px;
+    animation: textchat 5s infinite;
+}
+
+@keyframes textchat {
+    0% {
+        transform: scale(1.16);
+    }
+
+    25% {
+        transform: scale(1.18);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.27);
+    }
+}
+
+
+.addUser {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 3xl;
+    font-family: 'Work sans', sans-serif;
+    color: #ffff;
+}
+
+.addUser span {
+    animation: adduser 5s infinite;
+    font-size: 16px;
+}
+
+@keyframes adduser {
+    0% {
+        transform: translateY(2px);
+        font-size: 17px;
+    }
+
+    25% {
+    transform: translateY(2.3px);
+    font-size: 18px;
+    }
+
+    50% {
+        transform: translateY(2.5px);
+    font-size: 19px;
+    }
+
+    100% {
+    transform: translateY(2.9px);
+    font-size: 20px;
+    }
+}

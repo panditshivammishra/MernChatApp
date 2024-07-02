@@ -190,7 +190,28 @@ useEffect(() => {
             ))}
           </Stack>
         ) : (
-          <Text display="inline-flex" alignItems="center" justifyContent="center" py="12px">Add Users To Chat</Text>
+        <Text className="addUser" py="12px">
+        <span>A</span>
+        <span>d</span>
+        <span>d</span>
+                  <span>&nbsp;</span>
+                   <span>&nbsp;</span>
+        <span>U</span>
+        <span>s</span>
+        <span>e</span>
+        <span>r</span>
+        <span>s</span>
+                  <span>&nbsp;</span>
+                   <span>&nbsp;</span>
+        <span>T</span>
+        <span>o</span>
+                  <span>&nbsp;</span>
+                   <span>&nbsp;</span>
+        <span>C</span>
+        <span>h</span>
+        <span>a</span>
+        <span>t</span>
+      </Text>
         )}
       </Box>
       </Box>

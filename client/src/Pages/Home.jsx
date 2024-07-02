@@ -12,21 +12,21 @@ import {
 } from "@chakra-ui/react";
 import Signup from "../Authentication/Signup";
 import Login from "../Authentication/Login";
-
+import "../components/styles.css"
 function Home() {
   const { colorMode } = useColorMode();
   const signupRef = useRef(null); 
 
   const handleSignupClick = () => {
-    console.log("I am in signup")
+ 
     
    signupRef.current.click();
   };
 
   return (
-    <Container maxW="xl" centerContent marginTop={{ base: "40", lg: "10px" }}>
+    <Container maxW="xl" centerContent marginTop={{ base: "50px", lg: "3px" }}>
       <Box
-        d="flex"
+        display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
@@ -38,16 +38,21 @@ function Home() {
         borderWidth="1px"
         shadow="rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
       >
-        <Text
-          fontSize="4xl"
-          bgGradient="linear(to-r, #2E3A75, #357C6A, #8F8F70)"
-          bgClip="text"
-          fontWeight="bold"
-          textAlign={['center']}
-        >
-          Chat-App
+        
+        <Text className="text">
+      <span>C</span>
+      <span>h</span>
+      <span>a</span>
+      <span>t</span>
+      <span>A</span>
+      <span>p</span>
+      <span>p</span>
         </Text>
+        
       </Box>
+
+
+
       <Box
         bg={colorMode === 'dark' ? "gray.900" : "#75cff5"}
         w="100%"

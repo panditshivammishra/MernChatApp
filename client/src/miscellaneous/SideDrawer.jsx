@@ -77,12 +77,12 @@ const SideDrawer = () => {
         <Menu>
           <Tooltip label="Notifications" hasArrow placement="bottom-end">
             <MenuButton>
-            <Box position="relative" display="inline-flex" marginRight="40px">
+            <Box position="relative" display="grid" marginRight="10px" placeItems="center" >
       {/* Bell Icon */}
       <Box
         fontSize="3xl"
         cursor="pointer"
-        onClick={() => console.log('Bell clicked')}
+
         color="#ffff"
         
       >
