@@ -1,13 +1,22 @@
-import { Button } from "@chakra-ui/button";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { VStack } from "@chakra-ui/layout";
-import { useState } from "react";
+import React, { useState } from 'react';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  VStack,
+  useColorMode,
+  useToast,
+  Text,
+  Box
+} from "@chakra-ui/react";
 import axios from "axios";
-import { useColorMode, useToast ,Text,Box} from "@chakra-ui/react";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const Login = () => {
+const Login = ({ handleSignupClick }) => {
   const { colorMode } = useColorMode();
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
@@ -52,6 +61,7 @@ const Login = () => {
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
+      // Assuming you redirect after successful login
       window.location.href = '/chat';
     } catch (error) {
       toast({
@@ -72,54 +82,82 @@ const Login = () => {
   };
 
   return (
-    <VStack spacing="10px">
-      <FormControl isRequired>
-        <FormLabel>Email Address</FormLabel>
-        <Input
-          type="email"
-          placeholder="Enter Your Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </FormControl>
-      <FormControl isRequired>
-        <FormLabel>Password</FormLabel>
-        <InputGroup size="md">
+    <>
+      <VStack spacing="10px">
+        <FormControl isRequired>
+          <FormLabel>Email Address</FormLabel>
           <Input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type={show ? "text" : "password"}
-            placeholder="Enter password"
+            type="email"
+            placeholder="Enter Your Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <Button
-        colorScheme={colorMode === 'dark' ? "#0095f4" : "blue"}
-        width="100%"
-        style={{ marginTop: 15 }}
-        onClick={submitHandler}
-        isLoading={loading}
-      >
-        Login
-      </Button>
-      <Button
-        colorScheme="red"
-        variant="solid"
-        width="100%"
-        onClick={setGuestCredentials}
-      >
-        Get Guest User Credentials
-      </Button>
-      <Box display="flex" justifyContent="center" alignContent="center " flexDirection="column">
-      <Text display="grid" placeItems="center">Or</Text>
-      
-      <Text>If not registered <b href="signup">Sign Up</b> </Text></Box>
-    </VStack>
+        </FormControl>
+        <FormControl isRequired>
+          <FormLabel>Password</FormLabel>
+          <InputGroup size="md">
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type={show ? "text" : "password"}
+              placeholder="Enter password"
+            />
+            <InputRightElement width="4.5rem">
+              <Button h="1.75rem" size="sm" onClick={handleClick}>
+                {show ? "Hide" : "Show"}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </FormControl>
+        <Button
+          bg={colorMode === "dark" ? "#2aa2ef" : "#007ccc"}
+          color="#ffff"
+          width="100%"
+          _hover={{
+            backgroundColor: "#0062a1"
+          }}
+          style={{ marginTop: 15 }}
+          onClick={submitHandler}
+          isLoading={loading}
+        >
+          Login
+        </Button>
+        <Button
+          _hover={{
+            backgroundColor: "#e90404"
+          }}
+          color="#ffff"
+          bg="#e65151"
+          variant="solid"
+          width="100%"
+          onClick={setGuestCredentials}
+        >
+          Get Guest User Credentials
+        </Button>
+      </VStack>
+      <Box display="grid" placeItems="center">
+        <Text
+          display="inline-flex"
+          fontSize="14px"
+          whiteSpace="nowrap"
+          p="2px">Or
+        </Text>
+        <Text
+          display="inline-flex"
+          fontWeight="700"
+          color="#ffff"
+          fontSize="16px"
+        >
+          <b
+            style={{ color: "blue", marginRight: "5px", cursor: "pointer" }}
+            onClick={handleSignupClick} // Call handleSignupClick to switch tabs
+          >
+            Sign Up
+          </b>
+          If not registered
+        </Text>
+      </Box>
+    </>
   );
 };
 

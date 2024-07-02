@@ -71,8 +71,8 @@ content: "";
 
  /* CSS */
  .button-24 {
-     background: #bc0a04;
-     border: 1px solid #bc0a04;
+    
+     border: 1px solid #ff2b23;
      border-radius: 6px;
      box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
      box-sizing: border-box;
@@ -110,9 +110,11 @@ content: "";
  }
 
  .content{
+    
+    bottom: 3px;
     color: grey;
     font-size: 11px;
-   margin:22px 0px 0px 10px;
+   /* margin:12px 0px 0px 3px; */
     font-weight: 500;
  }
  .media{
@@ -157,3 +159,17 @@ padding:7px;
       background-color: #071005;
       opacity: .6;
   } */
+
+
+  .logs::-webkit-scrollbar{
+    width:0;
+  }
+
+  .sendButton{
+   
+    margin-left:8px;
+
+  
+  }
+
+

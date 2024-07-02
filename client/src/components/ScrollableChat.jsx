@@ -10,7 +10,7 @@ import BounceLoader from 'react-spinners/BounceLoader';
 import {
   isLastMessage,
   isSameSender,
-  isSameSenderMargin,
+ isSameSenderMargin,
   isSameUser,
 } from "../Config/ChatLogics";
 
@@ -40,17 +40,22 @@ const ScrollableChat = ({ messages,picLoading }) => {
       {messages &&
         messages.map((m, i) => (
           <div style={{ display: "flex" }} key={m._id} className={m.content.length === 0 ? 'ScrollDiv' : ''}>
-             
+            
             {(isSameSender(messages, m, i, user._id) ||
               isLastMessage(messages, i, user._id)) && (
               <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
                 <Avatar
-                  mt="7px"
+                  mt="22px"
                   mr={1}
+               
+                  ml={1}
                   size="sm"
                   cursor="pointer"
                   name={m.sender.name}
                   src={m.sender.pic}
+                  sx={{
+        boxShadow: 'none !important', // Remove any shadow
+            }}
                 />
               </Tooltip>
               )}
@@ -58,25 +63,34 @@ const ScrollableChat = ({ messages,picLoading }) => {
             <Box position="relative" fontWeight="500" color="#ffff" backgroundColor= {
                   m.sender._id === user._id ? `${colorMode==='light'?"rgb(42 252 37 )":"#0b6c5b"}` : `${colorMode==='light'?"#03527f":"gray.900"}`
                 } display="flex" justifyContent="center" flexDirection={m.content.length==0&&"column"} alignItems="center" style={{
-                
-                marginLeft: isSameSenderMargin(messages, m, i, user._id),
-                marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
-                borderRadius: "18px",
-                padding: "4px 12px",
-                maxWidth: "60%",
-                maxHeight:"60%"
-              }}>
+              
+               marginLeft: isSameSenderMargin(messages, m, i, user._id),
+                marginTop: isSameUser(messages, m, i, user._id) ? 3 : 25,
+                borderRadius: "13px",
+                  padding: "10px 20px 4px 20px",
+               
+              }}
+              maxWidth={["95%","75%"]}
+            >
            
                 
-              <p>
-          
-      { m.content.length > 0 ? (
+            <Box
+      display="flex"
+      flexWrap="wrap"
+      position="relative"
+    paddingBottom="12px"
+                wordBreak="break-word" 
+                fontWeight="500"   
+      marginRight="10px"          
+    >
+      {m.content.length > 0 ? (
         m.content
-      ) : ( <Media media={m.file} /> )
-      }  
-    </p>
+      ) : (
+        <Media media={m.file} />
+      )}
+    </Box>
   
-                 <Box className={m.content.length > 0?"content":"media"} >  {messageTimes[m._id] && (
+                 <Box className={m.content.length > 0?"content":"media"} position={m.content.length>0&&"absolute"} right="10px" bottom="2px">  {messageTimes[m._id] && (
                   <>
                     {formatTime(messageTimes[m._id].hours)}:
                     {formatTime(messageTimes[m._id].minutes)}

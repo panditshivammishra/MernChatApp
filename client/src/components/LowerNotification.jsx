@@ -24,11 +24,11 @@ const [messageTimes, setMessageTimes] = useState({});
   
   return (
   <Box display="flex">
-      <Text fontSize="xs" >
+      <Text fontSize="xs" color="grey" fontWeight="300">
           {latestMessage.content.length>0?(<>
              
               {latestMessage.content.length > 50
-                  ? latestMessage.content.substring(0, 51) + "..."
+                  ? latestMessage.content.substring(0, 40) + "..."
                   : latestMessage.content}</>):( <FaCamera/>)}
       </Text>
         <Box position="absolute" fontSize="xs" right="3" top="2.5" color="grey" fontWeight="500"> {`${messageTimes&&(messageTimes.hour<10?`0${messageTimes.hour}`:messageTimes.hour)}:${messageTimes&&(messageTimes.minute<10?`0${messageTimes.minute}`:messageTimes.minute)}`}</Box>

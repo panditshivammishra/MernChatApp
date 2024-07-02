@@ -13,7 +13,7 @@ const ChatProvider = ({ children }) => {
   const [callRoomId, setCallRoomId] = useState();
   const [checkCallChat, setCheckCallChat] = useState();
   const [callerData, setCallerData] = useState();
-  
+  const [videoCall, setVideoCall] = useState(false);
   const ENDPOINT = `${apiUrl}`;
   
   const socket = useMemo(() => io(ENDPOINT), []);
@@ -45,7 +45,7 @@ const ChatProvider = ({ children }) => {
         setNotification,
         chats,
         setChats,socket,popup,setPopup,checkCallChat, setCheckCallChat,callRoomId, setCallRoomId,callerData, setCallerData
-      }}
+      ,videoCall, setVideoCall}}
     >
       {children}
     </ChatContext.Provider>

@@ -6,8 +6,8 @@ import { useState } from "react";
 import VideoCall from "./VideoCall";
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const { colorMode } = useColorMode();
-  const [videoCall, setVideoCall] = useState(0); // Correct useState
-  const { selectedChat } = ChatState();
+  
+  const { selectedChat,videoCall } = ChatState();
 
   return (
     <>
@@ -25,9 +25,9 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
           h="98.5%"
          
         >
-          <SingleChat fetchAgain={fetchAgain} videoCall={videoCall} setVideoCall={setVideoCall} setFetchAgain={setFetchAgain} />
+          <SingleChat fetchAgain={fetchAgain}  setFetchAgain={setFetchAgain} />
         </Box>
-      ) : (<VideoCall setVideoCall={setVideoCall} videoCall={videoCall} setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} />)}
+      ) : (<VideoCall setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} />)}
     </>
   );
 };

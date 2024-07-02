@@ -9,9 +9,9 @@ import { Box, Spinner, IconButton ,useColorMode} from '@chakra-ui/react';
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import peer from "./Service/peer";
 import { Radio } from 'react-loader-spinner'
-const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
+const VideoCall = ({ setFetchAgain,fetchAgain}) => {
+  const { socket, selectedChat, setCheckCallChat, checkCallChat, callRoomId, setCallRoomId,setVideoCall, videoCall } = ChatState();
   const { colorMode } = useColorMode();
-  const { socket, selectedChat, setCheckCallChat, checkCallChat, callRoomId, setCallRoomId } = ChatState();
   const [remoteSocketId, setRemoteSocketId] = useState(null);
   const [myStream, setMyStream] = useState(null);
   const [initiator, setInitiator] = useState(true);
@@ -188,7 +188,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
     socket.emit("end-call", remoteSocketId);
     if (peer.peer) {
       peer.peer.close();
-      peer.createPeerConnection(); // Reinitialize the peer connection
+      peer.createPeerConnection(); 
     }
     endAllStreams();
   },[myStream]);
@@ -199,7 +199,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
       
         setUserDisconnect(true);
       
-        // rejectCall();
+    
       }
     };
 
@@ -261,7 +261,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
     };
   }, [remoteSocketId, initiator]);
   const backToChatBox = () => {
-    setVideoCall(false);
+    rejectCall();
   }
     
   return (
@@ -307,7 +307,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
                   position={isRemoteStreamPlaying ? 'absolute' : 'relative'}
                   bottom={isRemoteStreamPlaying ? '10px' : '0'}
                   right={isRemoteStreamPlaying ? '10px' : '0'}
-                  h={isRemoteStreamPlaying ? '40%' : '100%'}
+                  h={isRemoteStreamPlaying ? '30%' : '100%'}
                   w={isRemoteStreamPlaying ? '40%' : '100%'}
                   overflow="hidden"
                 
@@ -369,7 +369,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
                 )}
 
                 {(initiator||isRemoteStreamPlaying) && (
-                  <button onClick={rejectCall} className="button-24"  padding="5" borderRadius="50%" backgroundColor="red">
+                  <button onClick={rejectCall} className="button-24"  padding="5" borderRadius="50%" backgroundColor="#ff2b23">
                     <SlCallEnd />
                   </button>
                 )}
@@ -379,7 +379,7 @@ const VideoCall = ({ setVideoCall, videoCall,setFetchAgain,fetchAgain}) => {
         </>
       ) : (<><Box position="absolute" left="4" top="4" onClick={backToChatBox}>
           
-           <IconButton
+          <IconButton
               d={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon  color={colorMode==="light"?"rgb(30 179 26)":"#ffff"}/>}
             />

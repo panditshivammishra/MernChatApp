@@ -4,7 +4,7 @@ import online from "./animations/online.json"
 import offline from "./animations/offine.json"
 import { Box, Text } from "@chakra-ui/layout";
 import "./styles.css";
-import { useToast,useColorMode,Avatar} from "@chakra-ui/react";
+import { useToast,useColorMode,Avatar,Button} from "@chakra-ui/react";
 import { getSender,getSenderFull } from "../Config/ChatLogics";
 import { useEffect,  useState,useRef } from "react";
 import axios from "axios";
@@ -24,9 +24,11 @@ import {DeleteIcon} from '@chakra-ui/icons'
 var  selectedChatCompare;
 const apiUrl = import.meta.env.VITE_API_URL;
 const cloud = import.meta.env.VITE_CLOUD;
-const SingleChat = ({ fetchAgain, setFetchAgain,  setVideoCall }) => {
+const SingleChat = ({ fetchAgain, setFetchAgain}) => {
   const [picLoading, setPicLoading] = useState(false);
   const { colorMode } = useColorMode();
+   const { popup,setPopup,checkCallChat,setCheckCallChat,selectedChat, setSelectedChat, user, notification, setNotification,socket,setCallRoomId,callerData, setCallerData ,setVideoCall} =
+    ChatState();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -63,8 +65,7 @@ const previousChatId = useRef(null);
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { popup,setPopup,checkCallChat,setCheckCallChat,selectedChat, setSelectedChat, user, notification, setNotification,socket,setCallRoomId,callerData, setCallerData } =
-    ChatState();
+ 
   
 
 
@@ -100,7 +101,7 @@ const previousChatId = useRef(null);
    
          socket.on('user-online', (data) => {
            socket.emit('i also online',{userId:data,from:user._id});
-          //  setFetchAgain(!fetchAgain);
+         
        setOnlineUsers((prevOnlineUsers) => {
       const newOnlineUsers = new Set(prevOnlineUsers);
        newOnlineUsers.add(data);
@@ -119,7 +120,7 @@ const previousChatId = useRef(null);
     });
      
          socket.on("make me online", (data) => {
-          // setFetchAgain(!fetchAgain);
+         
            setOnlineUsers((prevOnlineUsers) => {
              const newOnlineUsers = new Set(prevOnlineUsers);
              newOnlineUsers.add(data);
@@ -572,8 +573,8 @@ const typingHandler = (e) => {
             {!selectedChat.isGroupChat && (
               <Box display="flex" alignItems="center" justifyContent="center">
                 <Tooltip label="delete chat" hasArrow placement="bottom-end">
-                  <button  onClick={deleteChat} style={{marginRight:"15px",marginBottom:"2px"}}>
-                    <DeleteIcon boxSize="1.2rem" color={colorMode === "light" ? "rgb(30 179 26)" : "#ffff"} />
+                  <button  onClick={deleteChat} style={{marginRight:"15px",marginBottom:"4px"}}>
+                    <DeleteIcon boxSize="1.1rem" color={colorMode === "light" ? "rgb(30 179 26)" : "#ffff"} />
                     </button>
                 </Tooltip>
                 <Tooltip label="video call" hasArrow placement="bottom-end">
@@ -581,8 +582,9 @@ const typingHandler = (e) => {
      
                   <button
                     onClick={() => handleVideoCall()}
+                    style={{marginRight:"10px"}}
                   >
-                    <IoMdVideocam color={colorMode === "light" ? "rgb(30 179 26)" : "#ffff"} size="1.5rem"/>
+                    <IoMdVideocam color={colorMode === "light" ? "rgb(30 179 26)" : "#ffff"} size="1.3rem" />
                   </button>
                 </Tooltip>
               </Box>
@@ -643,10 +645,12 @@ const typingHandler = (e) => {
               ) : (
                 <></>
               )}
+               <Box  display="flex"> 
                <InputGroup>
               <Input
                 variant="filled"
                   bg={colorMode==="dark"?"gray.700":"#E0E0E0"}
+                
                 
                 placeholder="Enter a message.."
                 value={newMessage}
@@ -656,7 +660,7 @@ const typingHandler = (e) => {
                 
 
 
-      <InputRightElement onClick={handleFileSelect} cursor="pointer"  marginRight="9">
+      <InputRightElement onClick={handleFileSelect} cursor="pointer"  marginRight="0">
         <BiImageAdd   color={colorMode==="light"?"rgb(30 179 26)":"#ffff"}  size="20px"/>
       
         <input
@@ -674,14 +678,16 @@ const typingHandler = (e) => {
 
 
 
-         <InputRightElement onClick={sendMessage} cursor="pointer">
+       
+              </InputGroup>
+            
+                 <button onClick={sendMessage} cursor="pointer" className="sendButton">
    
-    <IoSend   color={colorMode==="light"?"rgb(30 179 26)":"#ffff"} size="20px"/>
+    <IoSend   color={colorMode==="light"?"rgb(30 179 26)":"#ffff"} size="25px"/>
 
                   
-      </InputRightElement>
-              </InputGroup>
-             
+      </button> </Box>
+
             </FormControl>
           </Box>
         </>

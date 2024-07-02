@@ -5,15 +5,18 @@ import MyChats from "../components/MyChats";
 import SideDrawer from "../miscellaneous/SideDrawer";
 import { ChatState } from "../Context/ChatProvider";
 import ChatControl from "../miscellaneous/ChatControl";
+
 const Chatpage = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
-  const { user } = ChatState();
+  const { user, videoCall } = ChatState();
+  
+
   return (
-    <Box display="flex" position="relative" w="100%" h="100vh" overflowY="hidden">
+    <Box display="flex" position="relative" w="100vw" h="100vh" overflowY="hidden" >
       
       {user&&<ChatControl/>}
 
-    <Box display="flex" position="relative" flexDirection="column" style={{ width: "95%" }} >
+    <Box display="flex" position="relative"  width={videoCall?"100%":"95%"} flexDirection="column">
      
         {user &&<SideDrawer />}
 
