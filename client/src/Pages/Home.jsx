@@ -24,7 +24,7 @@ function Home() {
   };
 
   return (
-    <Container maxW="xl" centerContent marginTop={{ base: "50px", lg: "3px" }}>
+    <Container maxW="xl" centerContent marginTop={{ base: "2px", lg: "2px" }}>
       <Box
         display="flex"
         flexDirection="column"
@@ -68,7 +68,11 @@ function Home() {
             <Tab ref={signupRef}>Signup</Tab>
           </TabList>
           <TabPanels>
-            <TabPanel>
+            <TabPanel
+             overflow="auto" // Allow scrolling within the container
+              overscrollBehavior="none" // Prevents scroll chaining
+              maxHeight="60vh" // Limit the height to 70% of the viewport height
+              className='logs'>
               <Login handleSignupClick={handleSignupClick} />
             </TabPanel>
             <TabPanel

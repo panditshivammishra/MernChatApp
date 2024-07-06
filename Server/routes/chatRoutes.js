@@ -1,6 +1,6 @@
 import  express from "express";
 import {
-    accessChat,
+      accessChat,
       fetchChats,
       createGroupChat,
       removeFromGroup,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect, useCallback } from 'react';
 import {
   Button,
   FormControl,
@@ -13,8 +13,10 @@ import {
   Box
 } from "@chakra-ui/react";
 import axios from "axios";
-
+import { jwtDecode } from "jwt-decode";
+import { GoogleLogin,googleLogout ,useGoogleLogin} from '@react-oauth/google';
 const apiUrl = import.meta.env.VITE_API_URL;
+
 
 const Login = ({ handleSignupClick }) => {
   const { colorMode } = useColorMode();
@@ -24,7 +26,82 @@ const Login = ({ handleSignupClick }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleMail, setGoogleEmail] = useState();
+  const [googlePic, setGooglePic] = useState();
+  const [googleName, setGoogleName] = useState();
+  
+  
+  const getData = (response) => {
+    console.log("hello");
+    const data = jwtDecode(response.access_token)
+     console.log("hello");
+    
+ }
 
+  const setGoogleData = (credentialResponse) => {
+    
+    const data = jwtDecode(credentialResponse.credential)
+    console.log(data);
+    setGoogleEmail(data.email);
+    setGoogleName(data.name);
+    setGooglePic(data.picture);
+  
+  }
+  
+  const fetchUser = async () => {
+    setLoading(true);
+      console.log(googleMail)
+    if (googleMail && googleName && googlePic) {
+        
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+      
+        const { data } = await axios.post(
+          `${apiUrl}/api/user/googleLogin`,
+          { email:googleMail, name:googleName,pic:googlePic },
+          config
+        );
+        toast({
+          title: "Login successful",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        setLoading(false);
+        googleLogout();
+        // Assuming you redirect after successful login
+        setLoading(false);
+        window.location.href = '/chat';
+      }
+
+
+      catch (error) {
+        setLoading(false);
+         googleLogout();
+        toast({
+        title: "Error occurred!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+
+    }
+    
+  }
+  useEffect(() => {
+    if (googleMail && googleName && googlePic) {
+      fetchUser();
+    }
+  }, [googleMail, googleName, googlePic]);
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
@@ -80,7 +157,11 @@ const Login = ({ handleSignupClick }) => {
     setEmail("guest@example.com");
     setPassword("123456");
   };
-
+  
+  const login = useGoogleLogin({
+    
+  onSuccess: tokenResponse => getData(tokenResponse),
+});
   return (
     <>
       <VStack spacing="10px">
@@ -150,12 +231,24 @@ const Login = ({ handleSignupClick }) => {
         >
           <b
             style={{ color: "blue", marginRight: "5px", cursor: "pointer" }}
-            onClick={handleSignupClick} // Call handleSignupClick to switch tabs
+            onClick={handleSignupClick} 
           >
             Sign Up
           </b>
           If not registered
         </Text>
+      </Box>
+      <Box display="flex" alignContent="center" justifyContent="center">
+       <GoogleLogin
+          onSuccess={setGoogleData}
+  onError={() => {
+    console.log('Login Failed')
+  }}
+          responseType="code"
+          type="standard"
+/> 
+        
+        {/* <Button onClick={()=>login()}>SignIn</Button> */}
       </Box>
     </>
   );

@@ -73,4 +73,43 @@ const authUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid Email or Password");
   }
 });
-export {registerUser,authUser,allUsers};
+
+
+const googleAuth = asyncHandler(async(req,res) => {
+  const { name, email, pic } = req.body;
+  const user = await User.findOne({ email });
+  console.log(user);
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      pic: user.pic,
+      token: generateToken(user._id),
+    });
+  }
+  else {
+    const newUser = await User.create({
+      name,
+      email,
+      pic
+    });
+    
+    if (newUser) {
+      res.status(201).json({
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin,
+      pic: newUser.pic,
+      token: generateToken(newUser._id),
+    });
+    }
+
+    else {
+      res.status(400).send("unable to login");
+    }
+  }
+})
+export {registerUser,authUser,allUsers,googleAuth};
