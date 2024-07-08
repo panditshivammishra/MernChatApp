@@ -16,3 +16,6 @@ Used WebSocket for signalling, real time chat, add and remove user in realtime
 
 
 ![Screenshot (27)](https://github.com/panditshivammishra/MernChatApp/assets/109903290/e30e25c5-dedf-4e3f-ad73-b3dce9168060)
+
+
+![Screenshot (29)](https://github.com/panditshivammishra/MernChatApp/assets/109903290/fee87b50-fdb3-4cc5-9669-d739a78c9892)
