@@ -9,6 +9,7 @@ Used webRTC for video call
 
 Used WebSocket for signalling, real time chat, add and remove user in realtime
 
+I also have implemented dark and light theme for this chat app
 
 
 ![Screenshot (28)](https://github.com/panditshivammishra/MernChatApp/assets/109903290/656e6b81-d900-4bef-9978-95d7382943bd)
